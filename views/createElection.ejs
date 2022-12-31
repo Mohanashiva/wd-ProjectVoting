@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title><%= title %></title>
+    <style>
+        input#name:invalid:focus {
+            border: 1px solid red;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="relative flex min-h-screen flex-col jsutify-center overflow-hidden py-6 bg-gray-50 ">
+        <div
+            class="relative bg-white px-6 pb-5 shadow-xl ring-1 ring-gray-900/5 sm:mx-auto sm:max-w-lg sm:rounded-lg sm:px-10">
+            <div class="mx-auto max-w-md">
+                <a href="/" class="hover:text-pink-400 content-center"> <%- include('header.ejs') %> </a>
+                <h2 class="text-2xl  text-left font-bold my-5">
+                    Create your new election
+                </h2>
+                <div>
+                    <% if(messages && messages.error && messages.error.length > 0)  { %>
+                        <% for(var i=0; i<messages.error.length; i++) { %>
+                                <li class="text-white rounded px-4 py-4 bg-red-500"> <%= messages.error[i] %></li>
+                        <% } %>
+                      <% } %>
+                </div>
+                <div class="divide-y  divide-gray-300/50">
+                    <div class="space-y-6 text-base leading-7 text-ray-600">
+                        <form action="" id="user_form">
+                            <label for="name" class="text-md w-40 inline-block font-medium leading-5 text-gray-700">
+
+                                Election Name
+                            </label>
+                            <input required type="text" id="ElectionName" name="ElectionName"
+                                class="bg-gray-100 inline-block rounded-lg shadow-md py-3 px-4 mb-5 text-base leading-6 placeolder-gray-500"
+                                placeholder="Enter Election Name.." required><br />
+                                <div class="py-3">
+                                    <button type="submit"
+                                        class="text-white bg-pink-600 hover:bg-pink-700 font-medium rounded px-5 py-2">Login
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+    
+    </html>
