@@ -9,6 +9,7 @@ function extractCsrfToken(res) {
     var $ = cheerio.load(res.text);
     return $("[name=_csrf]").val();
 }
+
 const login = async (agent, username, password) => {
     let res = await agent.get("/login");
     let csrfToken = extractCsrfToken(res);
@@ -19,13 +20,13 @@ const login = async (agent, username, password) => {
     });
 };
 
-describe("Voting-Online web-application", function () {
+describe("OnlineVoting web application", function () {
     beforeAll(async () => {
         await db.sequelize.sync({ force: true });
         server = app.listen(4040, () => { });
         agent = request.agent(server);
     });
-    
+
 
     afterAll(async () => {
         try {
@@ -40,12 +41,12 @@ describe("Voting-Online web-application", function () {
         let res = await agent.get("/signup");
         const csrfToken = extractCsrfToken(res);
         res = await agent.post("/admin").send({
-            firstName: "king",
-            lastName: "kong",
-            email: "kingkong@gmail.com",
-            password: "abcdefgh",
+            FirstName: "John",
+            LastName: "wick",
+            Email: "Johnwick@gmail.com",
+            Password: "Johnwick123",
             _csrf: csrfToken,
         });
-        expect(res.statusCode).toBe(500);
+        expect(res.statusCode).toBe(302);
     })
 });

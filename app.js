@@ -3,7 +3,7 @@ const express = require("express");
 var csrf = require("tiny-csrf");
 var cookieParser = require("cookie-parser");
 const app = express();
-const { Admin, Elections } = require("./models");
+const {Admin, Elections } = require("./models");
 const bodyParser = require("body-parser");
 const passport = require("passport");
 const connectEnsureLogin = require("connect-ensure-login");
@@ -50,13 +50,13 @@ app.use(passport.session());
 passport.use(
   new LocalStrategy(
     {
-      usernameField: "email",
-      passwordField: "password",
+      usernameField: "Email",
+      passwordField: "Password",
     },
     (username, password, done) => {
       Admin.findOne({ where: { email: username } })
         .then(async (user) => {
-          const result = await bcrypt.compare(password, user.password);
+          const result = await bcrypt.compare(password, user.Password);
           if (result) {
             return done(null, user);
           } else {
@@ -70,9 +70,9 @@ passport.use(
   )
 );
 //converts obj to bytes
-passport.serializeUser((Admin, done) => {
-  console.log("Serializing user in session", Admin.id);
-  done(null, Admin.id);
+passport.serializeUser((user, done) => {
+  console.log("Serializing user in session", user.id);
+  done(null, user.id);
 });
 //converts bytes to obj
 passport.deserializeUser((id, done) => {
@@ -86,33 +86,33 @@ passport.deserializeUser((id, done) => {
 });
 
 app.get("/signup", (request, response) => {
-    response.render("signup", {
-      title: "Signup",
-      csrfToken: request.csrfToken(),
-    });
+  response.render("signup", {
+    title: "Signup",
+    csrfToken: request.csrfToken(),
   });
+});
 
   app.get("/login", (request, response) => {
     response.render("login", { title: "Login", csrfToken: request.csrfToken() });
   });
   
   app.post("/admin", async (request, response) => {
-    const hashedPwd = await bcrypt.hash(request.body.password, saltRounds);
+    const hashedPwd = await bcrypt.hash(request.body.Password, saltRounds);
     console.log(hashedPwd);
 
-    if(request.body.password.length < 8){
+    if(request.body.Password.length < 8){
       request.flash("error","Password should be atleast of length 8");
       response.redirect("/signup")
     }
     //have to create user hereg
     try {
-      const Admin = await Admin.create({
+      const admin = await Admin.create({
         FirstName: request.body.FirstName,
         LastName: request.body.LastName,
         Email: request.body.Email,
         Password: hashedPwd,
       });
-      request.login(Admin, (err) => {
+      request.login(admin, (err) => {
         if (err) {
           console.log(err);
           response.redirect("/");
@@ -126,90 +126,90 @@ app.get("/signup", (request, response) => {
     }
   });
 
-  app.post("/Elections",connectEnsureLogin.ensureLoggedIn(),async (request,response)=>{
-    const nullString=(request.body.electionName).trim()
+app.post("/Elections", connectEnsureLogin.ensureLoggedIn(), async (request, response) => {
+  const nullString = (request.body.electionName).trim()
 
-  if(nullString.length==0){
-    request.flash("error","Election Name Should not be Null")
+  if (nullString.length == 0) {
+    request.flash("error", "Election Name Should not be Null")
     return response.redirect("/election/create")
-    }
-    const url=request.body.customURL
-    function WhiteSpacesCheck(value){
-      return value.indexOf(' ') >= 0;
-   }
-   const whiteSpace=WhiteSpacesCheck(url);
-   if(whiteSpace==true){
-    request.flash("error","Do not use white spaces")
+  }
+  const url = request.body.customURL
+  function WhiteSpacesCheck(value) {
+    return value.indexOf(' ') >= 0;
+  }
+  const whiteSpace = WhiteSpacesCheck(url);
+  if (whiteSpace == true) {
+    request.flash("error", "Do not use white spaces")
     console.log("Spaces found")
-      return response.redirect("/election/create")
-   }
-    try{
-          await Elections.addElection({
-            electionName:request.body.electionName,
-            adminId:request.user.id,
-            customURL:request.body.customURL
-          });
-         return response.redirect("/Elections")
-      }
-      catch (error) {
-        request.flash("error", error.message);
-        return response.redirect("/Elections");
-      }
-  })
-
-  app.post(
-    "/session",
-    passport.authenticate("local", {
-      failureRedirect: "/login",
-      failureFlash: true,
-    }),
-    (request, response) => {
-      console.log(request.user);
-      response.redirect("/Elections");
-    }
-  );
-  //ensures only logged in admins acces the page
-  app.get(
-    "/Elections",
-    connectEnsureLogin.ensureLoggedIn(),
-    async (request, response) => {
-      let userName = request.user.FirstName + " " + request.user.LastName;
-      try {
-        const Elections = await Elections.getAllElections(request.user.id);
-        if (request.accepts("html")) {
-          response.render("Elections", {
-            title: "Online Voting",
-            userName,
-            Elections,
-            csrfToken: request.csrfToken(),
-          });
-        } else {
-          return response.json({ Elections });
-        }
-      } catch (error) {
-        console.log(error);
-        return response.status(422).json(error);
-      }
-    },
-    //to create election
-    app.get("/Elections/create",connectEnsureLogin.ensureLoggedIn(),async (request,response)=>{
-      response.render("createElection",{
-          title:"New Election",
-          csrfToken:request.csrfToken(),
-      })
-  
-    }),
-  
-  );
-
-  app.get("/signout", (request, response, next) => {
-    request.logout((err) => {
-      if (err) {
-        return next(err);
-      }
-      response.redirect("/");
+    return response.redirect("/election/create")
+  }
+  try {
+    await Elections.addElection({
+      electionName: request.body.electionName,
+      adminId: request.user.id,
+      customURL: request.body.customURL
     });
+    return response.redirect("/Elections")
+  }
+  catch (error) {
+    request.flash("error", error.message);
+    return response.redirect("/Elections");
+  }
+})
+
+app.post(
+  "/session",
+  passport.authenticate("local", {
+    failureRedirect: "/login",
+    failureFlash: true,
+  }),
+  (request, response) => {
+    console.log(request.user);
+    response.redirect("/Elections");
+  }
+);
+//ensures only logged in admins acces the page
+app.get(
+  "/Elections",
+  connectEnsureLogin.ensureLoggedIn(),
+  async (request, response) => {
+    let userName = request.user.FirstName + " " + request.user.LastName;
+    try {
+      const elections = await Elections.getAllElections(request.user.id);
+      if (request.accepts("html")) {
+        response.render("Elections", {
+          title: "Online Voting",
+          userName,
+          elections,
+          csrfToken: request.csrfToken(),
+        });
+      } else {
+        return response.json({ Elections });
+      }
+    } catch (error) {
+      console.log(error);
+      return response.status(422).json(error);
+    }
+  },
+  //to create election
+  app.get("/Elections/create", connectEnsureLogin.ensureLoggedIn(), async (request, response) => {
+    response.render("createElection", {
+      title: "New Election",
+      csrfToken: request.csrfToken(),
+    })
+
+  }),
+
+);
+
+app.get("/signout", (request, response, next) => {
+  request.logout((err) => {
+    if (err) {
+      return next(err);
+    }
+    response.redirect("/");
   });
+});
 
 
 

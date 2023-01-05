@@ -9,15 +9,19 @@
     <title><%= title %></title>
   </head>
   <body>
+    <div class="relative flex min-h-screen flex-col jsutify-center overflow-hidden py-6 bg-gray-50 ">
+        <div
+            class="relative bg-white px-6 pb-5 shadow-xl ring-1 ring-gray-900/5 sm:mx-auto sm:max-w-lg sm:rounded-lg sm:px-10">
+            <div class="mx-auto max-w-md">
     <div><%- include('header.ejs') %></div>
     <div>
       <h3 class="text-2xl">Welcome, <%= userName %></h3>
-      <% if (Elections.length==0) { %>
+      <% if (elections.length==0) { %>
        <p>You have zero Elections
-      <a href="createElection.ejs">Create a new Election</a>
+      <a href="Elections/create" class="text-pink-500">Create a new Election</a>
        </p>
       <% } else{ %>
-        <p><%=Elections[0].ElectionName %></p>
+        <p><%=elections[0].ElectionName %></p>
       <% } %> 
     </div>
   </body>
