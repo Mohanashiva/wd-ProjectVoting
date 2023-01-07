@@ -1,28 +1,43 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="csrf-token" content="<%= csrfToken %>" />
-    <script src="https://cdn.tailwindcss.com"></script>
-    <title><%= title %></title>
-  </head>
-  <body>
-    <div class="relative flex min-h-screen flex-col jsutify-center overflow-hidden py-6 bg-gray-50 ">
-        <div
-            class="relative bg-white px-6 pb-5 shadow-xl ring-1 ring-gray-900/5 sm:mx-auto sm:max-w-lg sm:rounded-lg sm:px-10">
-            <div class="mx-auto max-w-md">
-    <div><%- include('header.ejs') %></div>
-    <div>
-      <h3 class="text-2xl">Welcome, <%= userName %></h3>
-      <% if (elections.length==0) { %>
-       <p>You have zero Elections
-      <a href="Elections/create" class="text-pink-500">Create a new Election</a>
-       </p>
-      <% } else{ %>
-        <p><%=elections[0].ElectionName %></p>
-      <% } %> 
-    </div>
-  </body>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <title>
+    <%= title %>
+  </title>
+</head>
+
+<body>
+  <div class="relative flex min-h-screen flex-col jsutify-center overflow-hidden py-6 bg-gray-50 ">
+    <div
+      class="relative bg-white px-6 pb-5 shadow-xl ring-1 ring-gray-900/5 sm:mx-auto sm:max-w-lg sm:rounded-lg sm:px-10">
+      <div class="mx-auto max-w-md">
+        <div><%- include('header.ejs') %></div>
+        <div>
+          <h3 class="text-2xl">Welcome, <%= userName %>
+          </h3>
+          <% if (elections.length==0) { %>
+            <p>You have zero Elections
+              <br>
+            <div>
+              <a href="elections/create" class="text-pink-500">Create a new Election</a>
+            </div>
+            </p>
+            <% } else{ %>
+              <p class="text-2xl px-3 py-4">Your Elections:</p>
+              <% for(var i=0; i<elections.length; i++) {%>
+
+                <a href="/elections/<%= elections[i].id %>" class="px-3 text-xl hover:text-pink-300">
+                  <%= i+1 %> .<%=elections[i].electionName %>
+                </a>
+
+                <% } %>
+                  <% } %>
+        </div>
+</body>
+
 </html>

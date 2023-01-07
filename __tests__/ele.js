@@ -6,47 +6,46 @@ const app = require("../app");
 let server, agent;
 
 function extractCsrfToken(res) {
-    var $ = cheerio.load(res.text);
-    return $("[name=_csrf]").val();
+  var $ = cheerio.load(res.text);
+  return $("[name=_csrf]").val();
 }
 
 const login = async (agent, username, password) => {
-    let res = await agent.get("/login");
-    let csrfToken = extractCsrfToken(res);
-    res = await agent.post("/session").send({
-        email: username,
-        password: password,
-        _csrf: csrfToken,
-    });
+  let res = await agent.get("/login");
+  let csrfToken = extractCsrfToken(res);
+  res = await agent.post("/session").send({
+    email: username,
+    password: password,
+    _csrf: csrfToken,
+  });
 };
 
 describe("OnlineVoting web application", function () {
-    beforeAll(async () => {
-        await db.sequelize.sync({ force: true });
-        server = app.listen(4040, () => { });
-        agent = request.agent(server);
+  beforeAll(async () => {
+    await db.sequelize.sync({ force: true });
+    server = app.listen(4040, () => {});
+    agent = request.agent(server);
+  });
+
+  afterAll(async () => {
+    try {
+      await db.sequelize.close();
+      await server.close();
+    } catch (error) {
+      console.log(error);
+    }
+  });
+
+  test("Sign up", async () => {
+    let res = await agent.get("/signup");
+    const csrfToken = extractCsrfToken(res);
+    res = await agent.post("/admin").send({
+      FirstName: "John",
+      LastName: "wick",
+      Email: "Johnwick@gmail.com",
+      Password: "Johnwick123",
+      _csrf: csrfToken,
     });
-
-
-    afterAll(async () => {
-        try {
-            await db.sequelize.close();
-            await server.close();
-        } catch (error) {
-            console.log(error);
-        }
-    });
-
-    test("Sign up", async () => {
-        let res = await agent.get("/signup");
-        const csrfToken = extractCsrfToken(res);
-        res = await agent.post("/admin").send({
-            FirstName: "John",
-            LastName: "wick",
-            Email: "Johnwick@gmail.com",
-            Password: "Johnwick123",
-            _csrf: csrfToken,
-        });
-        expect(res.statusCode).toBe(302);
-    })
+    expect(res.statusCode).toBe(302);
+  });
 });

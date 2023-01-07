@@ -37,8 +37,9 @@
                 </div>
                 <div class="divide-y  divide-gray-300/50">
                     <div class="space-y-6 text-base leading-7 text-ray-600">
-                        <form action="" id="user_form">
-                            <label for="name" class="text-md w-40 inline-block font-medium leading-5 text-gray-700">
+                        <form action="/Elections" method="post">
+                            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                            <label for="ElectionName" class="text-md w-40 inline-block font-medium leading-5 text-gray-700">
                                 Election Name
                             </label>
                             <input required type="text" id="ElectionName" name="ElectionName"
@@ -47,12 +48,12 @@
                             <label for="string" class="text-md w-40 inline-block font-medium leading-5 text-gray-700">
                                 Enter any string
                             </label>
-                            <input required type="text" id="string" name="customURL"
+                            <input required type="text" id="string" name="string"
                                 class="bg-gray-100 inline-block rounded-lg shadow-md py-3 px-4 mb-5 text-base leading-6 placeolder-gray-500"
                                 placeholder="For customURL,no spaces"><br />
                             <button type="submit"
                                 class="text-white bg-pink-600 hover:bg-pink-700 font-medium rounded px-5 py-2">
-                                Login
+                                Create
                             </button>
                     </div>
                     </form>

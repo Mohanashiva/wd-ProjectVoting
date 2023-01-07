@@ -1,7 +1,5 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
+"use strict";
+const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class Elections extends Model {
     /**
@@ -14,12 +12,18 @@ module.exports = (sequelize, DataTypes) => {
       Elections.belongsTo(models.Admin, {
         foreignKey: "adminId",
       });
+      Elections.hasMany(models.Questions, {
+        foreignKey: "electionId",
+      });
+      Elections.hasMany(models.Voter, {
+        foreignKey: "electionId",
+      });
     }
     static addElection({ electionName, adminId, customURL }) {
       return this.create({
         electionName,
-        customURL,
         adminId,
+        customURL,
       });
     }
 
@@ -31,16 +35,40 @@ module.exports = (sequelize, DataTypes) => {
         order: [["id", "ASC"]],
       });
     }
+    static getElectionWithId(id) {
+      return this.findOne({
+        where: {
+          id,
+        },
+      });
+    }
   }
 
-  Elections.init({
-    electionName: DataTypes.STRING,
-    customURL: DataTypes.STRING,
-    isRunning: DataTypes.BOOLEAN,
-    isEnded: DataTypes.BOOLEAN
-  }, {
-    sequelize,
-    modelName: 'Elections',
-  });
+  Elections.init(
+    {
+      electionName: {
+        type: DataTypes.STRING,
+        unique: true,
+        allowNull: false,
+      },
+      customURL: {
+        type: DataTypes.STRING,
+        unique: true,
+        allowNull: false,
+      },
+      isRunning: {
+        defaultValue: false,
+        type: DataTypes.BOOLEAN,
+      },
+      isEnded: {
+        defaultValue: false,
+        type: DataTypes.BOOLEAN,
+      },
+    },
+    {
+      sequelize,
+      modelName: "Elections",
+    }
+  );
   return Elections;
 };

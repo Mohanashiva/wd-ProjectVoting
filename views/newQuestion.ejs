@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>
+        <%= title %>
+    </title>
+</head>
+
+<body>
+    <div class="relative flex min-h-screen flex-col jsutify-center overflow-hidden py-6 bg-gray-50 ">
+        <div
+            class="relative bg-white px-6 pb-5 shadow-xl ring-1 ring-gray-900/5 sm:mx-auto sm:max-w-lg sm:rounded-lg sm:px-10">
+            <div class="mx-auto max-w-md">
+                <% if (questions.length==0) { %>
+                    <p class="text-2xl px-3">No questions to show,click below
+                    <div class="py-7">
+                        <br><a href="/elections/<%=id%>/createNewQuestion" class="text-2xl px-2 py-8"> Click to Add new
+                            question </a>
+                    </div>
+                    <% } else{ %>
+                        <p class="text-2xl px-3 py-4">Your Questions:</p>
+                        <% for(var i=0; i<questions.length; i++) {%>
+
+                            <a class="px-3 text-xl hover:text-green-300">
+                                <%= i+1 %> .<%=questions[i].electionQuestion %>
+                            </a>
+
+                            <% } %>
+                                <div class="py-7">
+                                    <br><a href="/elections/<%=id%>/createNewQuestion" class="text-2xl px-2 py-5">
+                                         + Add new question from here +</a>
+                                </div>
+                                <% } %>
+
+</body>
+
+</html>
