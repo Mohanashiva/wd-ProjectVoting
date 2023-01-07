@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="<%= csrfToken %>">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>
+        <%= title %>
+    </title>
+    <style>
+        input#name:invalid:focus {
+            border: 1px solid red;
+        }
+    </style>
+</head>
+
+<body>
+    <div>
+        <% if(messages && messages.error && messages.error.length> 0) { %>
+            <% for(var i=0; i<messages.error.length; i++) { %>
+                <li class="text-white rounded px-4 py-4 bg-red-500">
+                    <%= messages.error[i] %>
+                </li>
+                <% } %>
+                    <% } %>
+    </div>
+
+    <div class="relative flex min-h-screen flex-col jsutify-center overflow-hidden py-6 bg-gray-50 ">
+        <div
+            class="relative bg-white px-6 pb-5 shadow-xl ring-1 ring-gray-900/5 sm:mx-auto sm:max-w-lg sm:rounded-lg sm:px-10">
+            <div class="mx-auto max-w-md">
+                <a href="/" class="hover:text-pink-400 content-center"> <%- include('header.ejs') %> </a>
+                <h2 class="text-2xl  text-left font-bold my-5">
+                    Add options to your question
+                </h2>
+
+                <div class="divide-y  divide-gray-300/50">
+                    <div class="space-y-6 text-base leading-7 text-ray-600">
+                        <form action="/elections/<%=id%>/createNewQuestion/<%=questionId%>" method="post">
+                            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                            <label for="Option" class="text-md w-40 inline-block font-medium leading-5 text-gray-700">
+                               Enter Option
+                            </label>
+                            <input required type="text" id="Option" name="Option"
+                                class="bg-gray-100 inline-block rounded-lg shadow-md py-3 px-4 mb-5 text-base leading-6 placeolder-gray-500"
+                                placeholder="Enter an option.." required><br>
+                            <button type="submit"
+                                class="tbg-transparent hover:bg-pink-500 text-black font-semibold hover:text-white py-2 px-4 border border-pink-500 hover:border-transparent rounded">
+                                +Add+
+                            </button><br>
+                            <a href="/elections/<%=id%>/createNewQuestion/<%=questionId%>/viewOptions"> <button
+                                    type="button"
+                                    class="w-fit rounded-lg shadow-lg px-5 py-3 bg-pink-500 text-white hover:bg-pink-400 focus:outline-none focus block">
+                                    View Options</button>
+                            </a>
+                    </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+</body>
+
+</html>

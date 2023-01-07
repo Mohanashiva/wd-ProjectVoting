@@ -12,7 +12,7 @@ module.exports = {
       electionQuestion: {
         type: Sequelize.STRING,
       },
-      electionDescription: {
+      questionDescription: {
         type: Sequelize.STRING,
       },
       createdAt: {

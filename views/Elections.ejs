@@ -12,7 +12,16 @@
 </head>
 
 <body>
-  <div class="relative flex min-h-screen flex-col jsutify-center overflow-hidden py-6 bg-gray-50 ">
+  <div>
+    <% if(messages && messages.error && messages.error.length> 0) { %>
+      <% for(var i=0; i<messages.error.length; i++) { %>
+        <li class="text-white rounded px-4 py-4 bg-red-500">
+          <%= messages.error[i] %>
+        </li>
+        <% } %>
+          <% } %>
+  </div>
+  <div class="relative flex min-h-screen flex-col jsutify-center overflow-hidden py-6 bg-pink-100 ">
     <div
       class="relative bg-white px-6 pb-5 shadow-xl ring-1 ring-gray-900/5 sm:mx-auto sm:max-w-lg sm:rounded-lg sm:px-10">
       <div class="mx-auto max-w-md">
@@ -21,22 +30,34 @@
           <h3 class="text-2xl">Welcome, <%= userName %>
           </h3>
           <% if (elections.length==0) { %>
-            <p>You have zero Elections
+            <p>You have zero Elections</p>
               <br>
             <div>
-              <a href="elections/create" class="text-pink-500">Create a new Election</a>
+              <a href="/election/create" class="text-pink-500">Create a new Election</a>
             </div>
-            </p>
+            
             <% } else{ %>
               <p class="text-2xl px-3 py-4">Your Elections:</p>
-              <% for(var i=0; i<elections.length; i++) {%>
+              <% for(var i=0; i<elections.length; i++) {%> <br>
 
-                <a href="/elections/<%= elections[i].id %>" class="px-3 text-xl hover:text-pink-300">
+                <a href="/elections/<%= elections[i].id %>"
+                  class="px-3 text-xl hover:text-pink-300 no-underline hover:underline px-4 py-4">
                   <%= i+1 %> .<%=elections[i].electionName %>
-                </a>
+                </a><br>
 
                 <% } %>
                   <% } %>
+        </div>
+        <div class="flex gap-2 py-4 justify-between">
+          <div
+            class="bg-transparent hover:bg-pink-500 text-black font-semibold hover:text-white py-2 px-4 border border-pink-500 hover:border-transparent rounded">
+            <a href="/elections/create" class="text">➕ Create a new election</a><br>
+          </div>
+          <div>
+            <a href="/signout"
+              class="relative bg-transparent hover:bg-pink-400 text-pink-600 font-semibold hover:text-white py-2 px-4 border border-pink-600 hover:border-transparent rounded">
+              Signout</a>
+          </div>
         </div>
 </body>
 

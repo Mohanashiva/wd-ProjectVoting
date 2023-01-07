@@ -13,11 +13,26 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "electionId",
       });
     }
-    static async VotersCount(electionId) {
+    static async addVoter({ voterUserId, voterPassword, electionId }) {
+      return await this.create({
+        voterUserId,
+        voterPassword,
+        electionId,
+      });
+    }
+    static async votersCount(electionId) {
       return await this.count({
         where: {
           electionId,
         },
+      })
+    }
+    static async fetchVoters(electionId) {
+      return await this.findAll({
+        where: {
+          electionId,
+        },
+        order: [["id", "ASC"]],
       });
     }
   }
@@ -44,7 +59,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     {
       sequelize,
-      modelName: "Voter",
+      modelName: "Voters",
     }
   );
   return Voters;

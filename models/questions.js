@@ -23,8 +23,8 @@ module.exports = (sequelize, DataTypes) => {
         electionId,
       });
     }
-    static async countOFQuestions(electionId) {
-      return await this.count({
+    static async countOfQuestions(electionId) {
+      return  this.count({
         where: {
           electionId,
         },
@@ -37,7 +37,15 @@ module.exports = (sequelize, DataTypes) => {
         },
       });
     }
-    static async getAllQuestions(electionId) {
+    static fetchQuestionWithName(question,description){
+      return this.findOne({
+        where:{
+          electionQuestion:question,
+          questionDescription:description,
+        }
+      })
+    }
+    static async fetchAllQuestions(electionId) {
       return this.findAll({
         where: {
           electionId,

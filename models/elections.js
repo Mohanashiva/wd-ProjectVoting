@@ -15,7 +15,7 @@ module.exports = (sequelize, DataTypes) => {
       Elections.hasMany(models.Questions, {
         foreignKey: "electionId",
       });
-      Elections.hasMany(models.Voter, {
+      Elections.hasMany(models.Voters, {
         foreignKey: "electionId",
       });
     }
@@ -25,6 +25,12 @@ module.exports = (sequelize, DataTypes) => {
         adminId,
         customURL,
       });
+    }
+    static fetchAllURL(adminId){
+      return this.findAll({
+        where:adminId,
+        attributes:['customURL']
+      })
     }
 
     static getAllElections(adminId) {
@@ -48,7 +54,6 @@ module.exports = (sequelize, DataTypes) => {
     {
       electionName: {
         type: DataTypes.STRING,
-        unique: true,
         allowNull: false,
       },
       customURL: {

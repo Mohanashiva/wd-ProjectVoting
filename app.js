@@ -201,14 +201,15 @@ app.get(
   //to create election
 ),
   app.get(
-    "/elections/byid",
+    "/elections/:id",
     connectEnsureLogin.ensureLoggedIn(),
     async (request, response) => {
-      const elections = await Elections.getElectionsWithId(request.params.id);
-      const questionsCount = await Questions.QuestionsCount(request.params.id);
-      const votersCount = await Voters.VotersCount(request.params.id);
-      console.log(questionsCount);
-      return response.render("questions", {
+      const elections = await Elections.getElectionWithId(request.params.id);
+      const questionsCount = await Questions.countOfQuestions(request.params.id);
+      // const allquestions = await Questions.fetchAllQuestions(request.params.id)
+      const votersCount = await Voters.votersCount(request.params.id);
+      
+      return response.render("Questions", {
         id: request.params.id,
         title: elections.electionName,
         csrfToken: request.csrfToken(),
@@ -219,16 +220,24 @@ app.get(
     }
   ),
   app.get(
-    "/elections/byId/newQuestion",
+    "/elections/:id/newQuestion",
     connectEnsureLogin.ensureLoggedIn(),
     async (request, response) => {
-      const elections = await Elections.getElectionsWithId(request.params.id);
-      const questions = await Questions.getAllQuestions(request.params.id);
+      console.log("hebchbehucbwhbchubhubfhbh");
+      const elections = await Elections.getElectionWithId(request.params.id);
+      const questions = await Questions.fetchAllQuestions(request.params.id);
+      console.log("hjdbhjbdhdbhjb" + (questions.length));
+      const questionIds = []
+      for (var i = 0; i < questions.length; i++) {
+        questionIds[i] = questions[i].id
+      }
+
       if (elections.isRunning == false) {
         if (request.accepts("html")) {
           return response.render("newQuestion", {
             title: elections.electionName,
             questions,
+            questionIds,
             csrfToken: request.csrfToken(),
             id: request.params.id,
           });
@@ -244,8 +253,9 @@ app.get(
       }
     }
   );
+
 app.get(
-  "/elections/byId/createNewQuestion",
+  "/election/:id/createNewQuestion",
   connectEnsureLogin.ensureLoggedIn(),
   async (request, response) => {
     return response.render("createQuestion", {
@@ -254,8 +264,26 @@ app.get(
     });
   }
 );
+
+app.get("/elections/:id/createNewQuestion/:questionId/viewOptions",
+  connectEnsureLogin.ensureLoggedIn(), async (request, response) => {
+    try {
+      const questions = await Questions.getQuestionWithId(request.params.questionId);
+      const allOptions = await Options.fetchAllOptions(request.params.questionId);
+      response.render("viewOptions", {
+        questionName: questions.electionQuestion,
+        allOptions,
+        csrfToken: request.csrfToken(),
+        id: request.params.id,
+        questionId: request.params.questionId
+      })
+    }
+    catch (error) {
+      console.log(error)
+    }
+  })
 app.get(
-  "/elections/create",
+  "/election/create",
   connectEnsureLogin.ensureLoggedIn(),
   async (request, response) => {
     response.render("createElection", {
@@ -264,35 +292,105 @@ app.get(
     });
   }
 ),
-  app.post(
-    "/elections/byID/createNewQuestion",
-    connectEnsureLogin.ensureLoggedIn(),
-    async (request, response) => {
-      const givenQuestion = request.body.questions.trim();
-      if (givenQuestion.length == 0) {
-        request.flash("error", "Question can not be empty");
-        return response.redirect(
-          `/election/${request.params.id}/createNewQuestion`
-        );
-      }
-      try {
-        const questions = request.body.questions;
-        const description = request.body.description;
-        const electionId = request.params.id;
-        await Questions.addNewQuestion({
-          questions,
-          description,
-          electionId,
-        });
-        return response.redirect(`/election/${request.params.id}`);
-      } catch (error) {
-        request.flash("error", error);
-        return response.redirect(
-          `/elections/${request.params.id}/createNewQuestion`
-        );
-      }
+  app.post("/elections/:id/createNewQuestion/:questionId",
+    connectEnsureLogin.ensureLoggedIn(), async (request, response) => {
+      await Options.addNewOption({
+        option: request.body.option,
+        questionId: request.params.questionId
+      })
+      const questionId = request.params.questionId
+      return response.redirect(`/elections/${request.params.id}/createNewQuestion/${questionId}/`)
+
+    })
+app.get("/elections/:id/createNewQuestion/:questionId",
+  connectEnsureLogin.ensureLoggedIn(), async (request, response) => {
+    response.render("addOptionsPage", {
+      title: "Add Options",
+      csrfToken: request.csrfToken(),
+      questionId: request.params.questionId,
+      id: request.params.id
+    })
+  })
+
+app.post(
+  "/elections/:id/createNewQuestion",
+  connectEnsureLogin.ensureLoggedIn(),
+  async (request, response) => {
+    const givenQuestion = request.body.questions.trim();
+    if (givenQuestion.length == 0) {
+      request.flash("error", "Question can not be empty");
+      return response.redirect(
+        `/election/${request.params.id}/createNewQuestion`
+      );
     }
-  );
+    try {
+      const questions = request.body.questions;
+      const description = request.body.description;
+      const electionId = request.params.id;
+      await Questions.addNewQuestion({
+        questions,
+        description,
+        electionId,
+      });
+      const thissquestion = await Questions.fetchQuestionWithName(questions, description)
+      const questionId = thissquestion.id;
+      return response.redirect(`/elections/${request.params.id}/createNewQuestion/${questionId}`)
+    } catch (error) {
+      request.flash("error", error);
+      return response.redirect(
+        `/elections/${request.params.id}/createNewQuestion`
+      );
+    }
+  }
+);
+
+app.get("/elections/:id/Voters", connectEnsureLogin.ensureLoggedIn(),
+  async (request, response) => {
+    const votersCount = await Voters.VotersCount(request.params.id);
+    const allVoters = await Voters.fetchVoters(request.params.id);
+    return response.render("Voters", {
+      votersCount,
+      allVoters,
+      csrfToken: request.csrfToken(),
+      id: request.params.id,
+    })
+
+  })
+app.get("/elections/:id/newVoters", connectEnsureLogin.ensureLoggedIn(),
+  async (request, response) => {
+    response.render("newVoter", {
+      csrfToken: request.csrfToken(),
+      id: request.params.id,
+    })
+  })
+
+  app.post("/elections/:id/newVoters",connectEnsureLogin.ensureLoggedIn(),
+   async(request,response)=>{
+    const voterUserId=(request.body.voterUserId).trim();
+    const voterPassword=request.body.voterPassword;
+
+    if(voterUserId.length==0){
+      request.flash("error","Voter's Username Should not be empty")
+      return response.redirect(`/elections/${request.params.id}/newVoters`)
+    }
+
+    if(voterPassword.length < 8){
+      request.flash("error","Password lenght must be of 8 characters");
+      return response.redirect(`/elections/${request.params.id}/newVoters`);
+    }
+    try{
+      await Voters.addVoter({
+        voterUserId:voterUserId,
+        voterPassword:voterPassword,
+        electionId:request.params.id,
+      })
+      response.redirect(`/elections/${request.params.id}/Voters`)
+    }
+    catch(error){
+      request.flash(error,error);
+      response.redirect(`/elections/${request.params.id}/newVoters`)
+    } 
+  });
 
 app.get("/signout", (request, response, next) => {
   request.logout((err) => {

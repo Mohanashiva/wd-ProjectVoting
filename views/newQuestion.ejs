@@ -25,15 +25,14 @@
                     <% } else{ %>
                         <p class="text-2xl px-3 py-4">Your Questions:</p>
                         <% for(var i=0; i<questions.length; i++) {%>
-
-                            <a class="px-3 text-xl hover:text-green-300">
+                            <a href="/elections/<%=id%>/newquestion/create/<%=questionIds[i]%>" class="px-3 text-xl hover:text-pink-600 no-underline hover:underline"></a>
                                 <%= i+1 %> .<%=questions[i].electionQuestion %>
                             </a>
 
                             <% } %>
                                 <div class="py-7">
-                                    <br><a href="/elections/<%=id%>/createNewQuestion" class="text-2xl px-2 py-5">
-                                         + Add new question from here +</a>
+                                    <br><a href="/election/<%=id%>/createNewQuestion" class="bg-transparent hover:bg-pink-500 text-black font-semibold hover:text-white py-2 px-4 border border-pink-500 hover:border-transparent rounded">
+                                        ➕ Add new question from here +</a>
                                 </div>
                                 <% } %>
 
