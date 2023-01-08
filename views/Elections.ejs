@@ -21,7 +21,7 @@
         <% } %>
           <% } %>
   </div>
-  <div class="relative flex min-h-screen flex-col jsutify-center overflow-hidden py-6 bg-pink-100 ">
+  <div class="relative align-items: flex-start min-h-screen flex-col jsutify-center overflow-hidden py-6 bg-pink-100 ">
     <div
       class="relative bg-white px-6 pb-5 shadow-xl ring-1 ring-gray-900/5 sm:mx-auto sm:max-w-lg sm:rounded-lg sm:px-10">
       <div class="mx-auto max-w-md">
@@ -43,20 +43,21 @@
                 <a href="/elections/<%= elections[i].id %>"
                   class="px-3 text-xl hover:text-pink-300 no-underline hover:underline px-4 py-4">
                   <%= i+1 %> .<%=elections[i].electionName %>
-                </a><br>
+                </a>
+                <br>
                   <% } %>
+                    <br><div>
+                      <a href="/election/create" class="bg-transparent hover:bg-pink-500 text-black font-semibold hover:text-white py-2 px-3 border border-pink-500 hover:border-transparent rounded">
+                        ➕ Create a new election</a><br>
+                    </div>
+                  <div><br>
                     <% } %>
-                </div><br>
-                <div class="flex gap-2 py-4 justify-between">
-                  <div
-                    class="bg-transparent hover:bg-pink-500 text-black font-semibold hover:text-white py-2 px-4 border border-pink-500 hover:border-transparent rounded">
-                    <a href="/election/create" class="text">➕ Create a new election</a><br>
-                  </div>
-                <div><br>
-                  <a href="/signout"
-                    class="relative bg-transparent hover:bg-pink-400 text-pink-600 my-10 font-semibold hover:text-white py-2 px-4 border border-pink-600 hover:border-transparent rounded">
-                    Signout</a>
                 </div>
+                  <br>
+                  <a href="/signout"
+                    class="bg-transparent hover:bg-pink-400 text-pink-600 my-10 font-semibold hover:text-white py-2 px-4 border border-pink-600 hover:border-transparent rounded">
+                    Signout</a>
+                
         </div>
 </body>
 

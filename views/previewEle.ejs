@@ -28,7 +28,7 @@
                 <div class="relative mx-auto mb-7 w-fit">
                 <div><%- include('header.ejs') %></div>
                 <div>
-                    <h3 class="text-xl">Welcome to preview page,<%= title %>
+                    <h3 class="text-xl">Welcome to preview page,
                     </h3>
                     <p>you can preview your election here</p>
                     <br>
@@ -52,6 +52,7 @@
                     </head>
                             <div class="mt-4 bg-white shadow-md rounded-lg text-left">
                                 <div class="py-2 px-8">
+                                    <h3 class="px-3 py-3 font-bold text-2xl text-cyan-600">Preview page for <%= ElectionName %>-Election: </h3>
                                     <ol class="list-decimal">
                                         <% for(let i=0; i<questions.length; i++) { %>
                                             <li class="my-2">
@@ -60,7 +61,7 @@
                                                         <%= questions[i].electionQuestion %>
                                                     </h3>
                                                     <p class="text-cyan-800 text-md my-2">
-                                                        <%= questions[i].questionDescription %>
+                                                        description:<%= questions[i].questionDescription %>
                                                     </p>
                                                 </div>
                                                 <div class="ml-8">
@@ -82,8 +83,8 @@
                                             </li>
                                             <% } %>
                                     </ol>
-                                    <div> <a href="/Elections"  class="w-fit rounded-lg shadow-lg px-4 py-4 bg-pink-500 text-white hover:bg-pink-400 focus:outline-none focus block">
-                                        go back</a>
+                                    <div> <a href="/Elections"  class="w-fit rounded-lg shadow-lg px-3 py-4 bg-pink-500 text-white hover:bg-pink-400 focus:outline-none focus block">
+                                        home</a>
                         </div>
                     </div>
 </body>

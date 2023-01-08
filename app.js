@@ -409,6 +409,7 @@ app.get("/elections/:id/newVoters", connectEnsureLogin.ensureLoggedIn(),
 
 // for preview page
   app.get("/elections/:id/previewEle",connectEnsureLogin.ensureLoggedIn(), async(request,response)=>{
+    let ElectionName = request.user.electionName;
     if (request.user.WhoThat ==="admin") {
       try {
         const election = await Elections.getElectionWithId(request.params.id);
@@ -467,6 +468,7 @@ app.get("/elections/:id/newVoters", connectEnsureLogin.ensureLoggedIn(),
           title: election.electionName,
           electionId: request.params.id,
           questions,
+          ElectionName: election.electionName,
           options,
           csrfToken: request.csrfToken(),
         });
