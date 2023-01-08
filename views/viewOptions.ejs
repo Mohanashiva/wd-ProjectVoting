@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="<%= csrfToken %>">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>
+        options page
+    </title>
+    <style>
+        input#name:invalid:focus {
+            border: 1px solid red;
+        }
+    </style>
+</head>
+
+<body>
+    <div>
+        <% if(messages && messages.error && messages.error.length> 0) { %>
+            <% for(var i=0; i<messages.error.length; i++) { %>
+                <li class="text-white rounded px-4 py-4 bg-red-500">
+                    <%= messages.error[i] %>
+                </li>
+                <% } %>
+                    <% } %>
+    </div>
+
+    <div class="relative flex min-h-screen flex-col jsutify-center overflow-hidden py-6 bg-pink-100 ">
+        <div
+            class="relative bg-white px-6 pb-5 shadow-xl ring-1 ring-gray-900/5 sm:mx-auto sm:max-w-lg sm:rounded-lg sm:px-10">
+            <div class="mx-auto max-w-md">
+                <%- include('header.ejs') %>
+                    <h3 class="px-5 py-3 text-xl "> Question:
+                        <%= questionName %>
+                    </h3>
+                    <% if (allOptions.length==0) { %>
+                        <p class="text-2xl px-3">no options are added for this question..
+                        <% } else{ %>
+                            <p class="text-2xl px-3 py-4">Options of your Question are:</p>
+                            <% for(var i=0; i<allOptions.length; i++) {%>
+
+                                <a href="" class="px-3 text-xl hover:text-green-300">
+                                    <%= i+1 %> .<%=allOptions[i].option %>
+                                </a> <br>
+
+                                <% } %>
+                                    <div class="py-7">
+                                        <br><a href="/elections/<%=id%>/createNewQuestion/<%=questionId%>/createOptions"
+                                            class="bg-transparent hover:bg-pink-500 text-black font-semibold hover:text-white py-2 px-3 my-3 border border-pink-500 hover:border-transparent rounded"> + Add More
+                                            Options From Here</a>
+                                    </div>
+                                    <% } %>
+</body>

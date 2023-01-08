@@ -15,8 +15,9 @@ module.exports = {
       voterPassword: {
         type: Sequelize.STRING,
       },
-      isWho: {
+      WhoThat: {
         type: Sequelize.STRING,
+        defaultValue:"voter"
       },
       isVoted: {
         type: Sequelize.BOOLEAN,

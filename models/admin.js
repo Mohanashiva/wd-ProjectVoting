@@ -24,6 +24,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: false,
       },
+      WhoThat: {
+        type:DataTypes.STRING,
+        defaultValue:"admin"
+      },
       Email: DataTypes.STRING,
       Password: {
         type: DataTypes.STRING,

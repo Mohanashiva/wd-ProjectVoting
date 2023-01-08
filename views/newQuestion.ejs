@@ -12,30 +12,42 @@
 </head>
 
 <body>
-    <div class="relative flex min-h-screen flex-col jsutify-center overflow-hidden py-6 bg-gray-50 ">
+    <div class="relative flex min-h-screen flex-col jsutify-center overflow-hidden py-6 bg-pink-100 ">
         <div
             class="relative bg-white px-6 pb-5 shadow-xl ring-1 ring-gray-900/5 sm:mx-auto sm:max-w-lg sm:rounded-lg sm:px-10">
             <div class="mx-auto max-w-md">
-                <% if (questions.length==0) { %>
-                    <p class="text-2xl px-3">No questions to show,click below
-                    <div class="py-7">
-                        <br><a href="/elections/<%=id%>/createNewQuestion" class="text-2xl px-2 py-8"> Click to Add new
-                            question </a>
-                    </div>
-                    <% } else{ %>
-                        <p class="text-2xl px-3 py-4">Your Questions:</p>
-                        <% for(var i=0; i<questions.length; i++) {%>
-                            <a href="/elections/<%=id%>/newquestion/create/<%=questionIds[i]%>" class="px-3 text-xl hover:text-pink-600 no-underline hover:underline"></a>
-                                <%= i+1 %> .<%=questions[i].electionQuestion %>
-                            </a>
+                <a href="/Elections" class="hover:text-pink-400 content-center"> <%- include('header.ejs') %> </a>
+                <h3 class="px-3 py-4 font-bold text-2xl text-cyan-600 underline">Manage Questions of <%= ElectionName %>
+                        -Election: </h3><br>
+                <p class="text-2xl px-4 py-5">No of Questions: <%= CoQuestions %>
+                        <% if (questions.length==0) { %>
+                            <p class="text-xl px-3">You have not created any questions to show..
+                            <div class="py-7">
+                                <br><a href="/election/<%=id%>/createNewQuestion"
+                                    class="bg-transparent hover:bg-pink-500 text-black font-semibold hover:text-white py-2 px-4 border border-pink-500 hover:border-transparent rounded">
+                                    ➕Click here to add questions
+                                </a>
+                            </div>
+                            <% } else{ %>
+                                <p class="text-2xl px-3 py-4">Your Questions:</p>
+                                <% for(var i=0; i<questions.length; i++) {%>
+                                    <a href="/elections/<%=id%>/createNewQuestion/<%=questionIds[i]%>"
+                                        class="px-3 text-xl hover:text-pink-600 no-underline hover:underline"></a>
+                                    <%= i+1 %> .<%=questions[i].electionQuestion %>
+                                            </a>
 
-                            <% } %>
-                                <div class="py-7">
-                                    <br><a href="/election/<%=id%>/createNewQuestion" class="bg-transparent hover:bg-pink-500 text-black font-semibold hover:text-white py-2 px-4 border border-pink-500 hover:border-transparent rounded">
-                                        ➕ Add new question from here +</a>
-                                </div>
-                                <% } %>
-
+                                            <% } %>
+                                                <div class="py-7">
+                                                    <br><a href="/election/<%=id%>/createNewQuestion"
+                                                        class="bg-transparent hover:bg-pink-500 text-black font-semibold hover:text-white py-2 px-4 border border-pink-500 hover:border-transparent rounded">
+                                                        ➕ Add more questions from here</a>
+                                                </div>
+                                                <% } %>
+                                                    <div><br>
+                                                        <a href="/signout"
+                                                            class="relative bg-transparent hover:bg-pink-400 text-pink-600 my-10 font-semibold hover:text-white py-2 px-4 border border-pink-600 hover:border-transparent rounded">
+                                                            Signout</a>
+                                                    </div>
 </body>
 
 </html>

@@ -7,8 +7,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="<%= csrfToken %>">
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="./css/style.css" rel="stylesheet">
-    <title>Create Question</title>
+    <title>
+        add question
+    </title>
     <style>
         input#name:invalid:focus {
             border: 1px solid red;
@@ -17,40 +18,32 @@
 </head>
 
 <body>
-    <div>
-        <% if(messages && messages.error && messages.error.length> 0) { %>
-            <% for(var i=0; i<messages.error.length; i++) { %>
-                <li class="text-white rounded px-4 py-4 bg-red-500">
-                    <%= messages.error[i] %>
-                </li>
-                <% } %>
-                    <% } %>
-    </div>
-
-    <div class="relative flex min-h-screen flex-col justify-center overflow-hidden py-6 bg-white ">
+    <div class="relative flex min-h-screen flex-col jsutify-center overflow-hidden py-6 bg-pink-100 ">
         <div
             class="relative bg-white px-6 pb-5 shadow-xl ring-1 ring-gray-900/5 sm:mx-auto sm:max-w-lg sm:rounded-lg sm:px-10">
             <div class="mx-auto max-w-md">
-                <a href="/" class="hover:text-pink-400 content-center"> <%- include('header.ejs') %> </a>
+                <a href="/Elections" class="hover:text-pink-400 content-center"> <%- include('header.ejs') %> </a>
+                <h3 class="px-3 py-3 font-bold text-2xl text-cyan-600 underline">Create Question for <%= ElectionName %>-Election: </h3>
                 <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-                <h2 class="text-2xl  text-center font-bold my-5">
+                <h2 class="text-2xl  text-center font-bold mb-4">
                     Add Your Question
                 </h2>
                 <div class="divide-y  divide-gray-300/50">
                     <div class="space-y-6 text-base leading-7 text-ray-600">
-                        <form action="/elections/<%=id%>/newQuestion" method="post" >
-                            <label for="question" class="text-md w-40 inline-block font-medium leading-5 text-gray-700">
-                                Question
-                            </label>
+                        <form action="/elections/<%=id%>/createNewQuestion" method="post">
+                            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                            <label for="question" class="text-md inline-block font-medium leading-5 text-gray-700">
+                                Question: </label>
                             <input required type="text" id="question" name="question"
-                                class="bg-gray-100 inline-block rounded-lg shadow-md py-3 px-4 mb-5 text-base leading-6 placeolder-gray-500"
+                                class="bg-gray-100 inline-block rounded-lg shadow-md pr-6 py-3 px-4 mb-5 text-base leading-6 placeolder-gray-500"
                                 placeholder="Write your question.." required><br />
-                            <label for="description" class="text-md w-40 inline-block font-medium leading-5 text-gray-700">
-                                Description
+                            <label for="description"
+                                class="text-md w-40 inline-block font-medium leading-5 text-gray-700">
+                                Description:
                             </label>
-                            <input required type="text" id="description" name="description"
+                            <textarea rows="4" cols="40" type="text" id="description" name="description"
                                 class="bg-gray-100 inline-block rounded-lg shadow-md py-3 px-4 mb-5 text-base leading-6 placeolder-gray-500"
-                                placeholder="Add a brief description"><br />
+                                placeholder="Add a brief description"></textarea><br>
                             <button type="submit"
                                 class="text-white bg-pink-600 hover:bg-pink-700 font-medium rounded px-5 py-2">
                                 Submit

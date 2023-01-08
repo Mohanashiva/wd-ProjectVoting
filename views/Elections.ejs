@@ -31,11 +31,11 @@
           </h3>
           <% if (elections.length==0) { %>
             <p>You have zero Elections</p>
-              <br>
+            <br>
             <div>
-              <a href="/election/create" class="text-pink-500">Create a new Election</a>
+              <a href="/election/create" class="text-pink-500">+Create your first Election+</a>
             </div>
-            
+
             <% } else{ %>
               <p class="text-2xl px-3 py-4">Your Elections:</p>
               <% for(var i=0; i<elections.length; i++) {%> <br>
@@ -44,20 +44,19 @@
                   class="px-3 text-xl hover:text-pink-300 no-underline hover:underline px-4 py-4">
                   <%= i+1 %> .<%=elections[i].electionName %>
                 </a><br>
-
-                <% } %>
                   <% } %>
-        </div>
-        <div class="flex gap-2 py-4 justify-between">
-          <div
-            class="bg-transparent hover:bg-pink-500 text-black font-semibold hover:text-white py-2 px-4 border border-pink-500 hover:border-transparent rounded">
-            <a href="/elections/create" class="text">➕ Create a new election</a><br>
-          </div>
-          <div>
-            <a href="/signout"
-              class="relative bg-transparent hover:bg-pink-400 text-pink-600 font-semibold hover:text-white py-2 px-4 border border-pink-600 hover:border-transparent rounded">
-              Signout</a>
-          </div>
+                    <% } %>
+                </div><br>
+                <div class="flex gap-2 py-4 justify-between">
+                  <div
+                    class="bg-transparent hover:bg-pink-500 text-black font-semibold hover:text-white py-2 px-4 border border-pink-500 hover:border-transparent rounded">
+                    <a href="/election/create" class="text">➕ Create a new election</a><br>
+                  </div>
+                <div><br>
+                  <a href="/signout"
+                    class="relative bg-transparent hover:bg-pink-400 text-pink-600 my-10 font-semibold hover:text-white py-2 px-4 border border-pink-600 hover:border-transparent rounded">
+                    Signout</a>
+                </div>
         </div>
 </body>
 

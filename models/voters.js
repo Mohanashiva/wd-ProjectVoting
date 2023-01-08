@@ -52,7 +52,7 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         defaultValue: false,
       },
-      isWho: {
+      WhoThat: {
         type: DataTypes.STRING,
         defaultValue: "voter",
       },

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>
+        add voters page
+    </title>
+</head>
+
+<body>
+    <div class="relative flex min-h-screen flex-col jsutify-center overflow-hidden py-6 bg-pink-100 ">
+        <div
+            class="relative bg-white px-6 pb-5 shadow-xl ring-1 ring-gray-900/5 sm:mx-auto sm:max-w-lg sm:rounded-lg sm:px-10">
+            <div class="mx-auto max-w-md">
+                <a href="/Elections" class="hover:text-pink-400 content-center"> <%- include('header.ejs') %> </a>
+                <h3 class="px-3 py-3 font-bold text-2xl text-cyan-600 underline">Voters of <%= ElectionName %>-Election: </h3><br>
+                <% if (votersCount==0) { %>
+                    <p class="text-xl px-3">
+                        You have not added any voters for this election...
+                    <div class="py-6">
+                        <br><a href="/elections/<%=id%>/newVoters" class="w-fit rounded-lg shadow-lg px-5 py-3 bg-pink-500 text-white hover:bg-pink-400 focus:outline-none focus block">
+                            ➕Add New Voter</a>
+                    </div>
+                    <% } else{ %>
+                        <p class="text-2xl px-3 py-4 font-bold">
+                            List of Voters:
+                        </p>
+                        <% for(var i=0; i<allVoters.length; i++) {%>
+                            <br> <a href="" class="px-3 text-xl font-style: italic">
+                                <%= i+1 %> .VoterId:<%=allVoters[i].voterUserId %>
+                                password:<%=allVoters[i].voterPassword %>
+                            </a> <br>
+                            <% } %>
+                                <div>
+                                    <br><a href="/elections/<%=id%>/newVoters" class="w-fit rounded-lg shadow-lg px-5 py-3 bg-pink-500 text-white hover:bg-pink-400 focus:outline-none focus block">
+                                        ➕Add more voters</a>
+                                </div>
+                                <% } %>
+
+</body>

@@ -208,10 +208,12 @@ app.get(
       const questionsCount = await Questions.countOfQuestions(request.params.id);
       // const allquestions = await Questions.fetchAllQuestions(request.params.id)
       const votersCount = await Voters.votersCount(request.params.id);
+      let ElectionName = request.user.electionName;
       
-      return response.render("Questions", {
+      return response.render("manageEle", {
         id: request.params.id,
         title: elections.electionName,
+        ElectionName:elections.electionName,
         csrfToken: request.csrfToken(),
         CoQuestions: questionsCount,
         CoVoters: votersCount,
@@ -219,6 +221,7 @@ app.get(
       });
     }
   ),
+  // for questions
   app.get(
     "/elections/:id/newQuestion",
     connectEnsureLogin.ensureLoggedIn(),
@@ -226,6 +229,8 @@ app.get(
       console.log("hebchbehucbwhbchubhubfhbh");
       const elections = await Elections.getElectionWithId(request.params.id);
       const questions = await Questions.fetchAllQuestions(request.params.id);
+      const questionsCount = await Questions.countOfQuestions(request.params.id);
+      let ElectionName = request.user.electionName;
       console.log("hjdbhjbdhdbhjb" + (questions.length));
       const questionIds = []
       for (var i = 0; i < questions.length; i++) {
@@ -238,6 +243,8 @@ app.get(
             title: elections.electionName,
             questions,
             questionIds,
+            ElectionName:elections.electionName,
+            CoQuestions: questionsCount,
             csrfToken: request.csrfToken(),
             id: request.params.id,
           });
@@ -258,13 +265,18 @@ app.get(
   "/election/:id/createNewQuestion",
   connectEnsureLogin.ensureLoggedIn(),
   async (request, response) => {
+    const elections = await Elections.getElectionWithId(request.params.id);
+    let ElectionName = request.user.electionName;
+
     return response.render("createQuestion", {
       id: request.params.id,
+      title: elections.electionName,
+      ElectionName:elections.electionName,
       csrfToken: request.csrfToken(),
     });
   }
 );
-
+//for options
 app.get("/elections/:id/createNewQuestion/:questionId/viewOptions",
   connectEnsureLogin.ensureLoggedIn(), async (request, response) => {
     try {
@@ -295,16 +307,16 @@ app.get(
   app.post("/elections/:id/createNewQuestion/:questionId",
     connectEnsureLogin.ensureLoggedIn(), async (request, response) => {
       await Options.addNewOption({
-        option: request.body.option,
+        option: request.body.Option,
         questionId: request.params.questionId
       })
       const questionId = request.params.questionId
-      return response.redirect(`/elections/${request.params.id}/createNewQuestion/${questionId}/`)
+      return response.redirect(`/elections/${request.params.id}/createNewQuestion/${questionId}/createOptions`)
 
     })
-app.get("/elections/:id/createNewQuestion/:questionId",
+app.get("/elections/:id/createNewQuestion/:questionId/createOptions",
   connectEnsureLogin.ensureLoggedIn(), async (request, response) => {
-    response.render("addOptionsPage", {
+    response.render("createOptions", {
       title: "Add Options",
       csrfToken: request.csrfToken(),
       questionId: request.params.questionId,
@@ -316,7 +328,7 @@ app.post(
   "/elections/:id/createNewQuestion",
   connectEnsureLogin.ensureLoggedIn(),
   async (request, response) => {
-    const givenQuestion = request.body.questions.trim();
+    const givenQuestion = request.body.question.trim();
     if (givenQuestion.length == 0) {
       request.flash("error", "Question can not be empty");
       return response.redirect(
@@ -324,33 +336,36 @@ app.post(
       );
     }
     try {
-      const questions = request.body.questions;
+      const question = request.body.question;
       const description = request.body.description;
       const electionId = request.params.id;
-      await Questions.addNewQuestion({
-        questions,
+    const thissquestion=  await Questions.addNewQuestion({
+        question,
         description,
         electionId,
       });
-      const thissquestion = await Questions.fetchQuestionWithName(questions, description)
+      // const thissquestion = await Questions.getQuestionWithId(request.params.id)
       const questionId = thissquestion.id;
-      return response.redirect(`/elections/${request.params.id}/createNewQuestion/${questionId}`)
+      return response.redirect(`/elections/${request.params.id}/createNewQuestion/${questionId}/createOptions`)
     } catch (error) {
       request.flash("error", error);
       return response.redirect(
-        `/elections/${request.params.id}/createNewQuestion`
+        `/election/${request.params.id}/createNewQuestion`
       );
     }
   }
 );
-
+//for voters
 app.get("/elections/:id/Voters", connectEnsureLogin.ensureLoggedIn(),
   async (request, response) => {
-    const votersCount = await Voters.VotersCount(request.params.id);
+    const elections = await Elections.getElectionWithId(request.params.id);
+    const votersCount = await Voters.votersCount(request.params.id);
     const allVoters = await Voters.fetchVoters(request.params.id);
+    let ElectionName = request.user.electionName;
     return response.render("Voters", {
       votersCount,
       allVoters,
+      ElectionName:elections.electionName,
       csrfToken: request.csrfToken(),
       id: request.params.id,
     })
@@ -392,6 +407,78 @@ app.get("/elections/:id/newVoters", connectEnsureLogin.ensureLoggedIn(),
     } 
   });
 
+// for preview page
+  app.get("/elections/:id/previewEle",connectEnsureLogin.ensureLoggedIn(), async(request,response)=>{
+    if (request.user.WhoThat ==="admin") {
+      try {
+        const election = await Elections.getElectionWithId(request.params.id);
+        if (request.user.id !== election.adminId) {
+          request.flash("error", "Invalid election-Id");
+          return response.redirect("/elections");
+        }
+        const votersCount = await Voters.votersCount(
+          request.params.id
+        );
+        const questions = await Questions.fetchAllQuestions(
+          request.params.id
+        );
+        let options = [];
+        for (let question in questions) {
+          const questionNoptions = await Options.fetchAllOptions(
+            questions[question].id
+          );
+          if (questionNoptions.length < 2) {
+            request.flash(
+              "error",
+              "There should be minimum two options for each question"
+            );
+            request.flash(
+              "error",
+              "Please add atleast two options"
+            );
+            return response.redirect(
+              `/elections/${request.params.id}/createNewQuestion/${questions[question].id}`
+            );
+          }
+          options.push(questionNoptions);
+        }
+
+        if (questions.length < 1) {
+          request.flash(
+            "error",
+            "Please add atleast one question for this Election"
+          );
+          return response.redirect(
+            `/elections/${request.params.id}/newQuestion`
+          );
+        }
+
+        if (votersCount < 1) {
+          request.flash(
+            "error",
+            "Please add minimum one voter for this election"
+          );
+          return response.redirect(
+            `/elections/${request.params.id}/voters`
+          );
+        }
+
+        return response.render("previewEle", {
+          title: election.electionName,
+          electionId: request.params.id,
+          questions,
+          options,
+          csrfToken: request.csrfToken(),
+        });
+      } catch (error) {
+        console.log(error);
+        return response.status(422).json(error);
+      }
+    } else if (request.user.WhoThat === "voter") {
+      return response.redirect("/");
+    }
+  });
+//for signout
 app.get("/signout", (request, response, next) => {
   request.logout((err) => {
     if (err) {

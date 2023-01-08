@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="csrf-token" content="<%= csrfToken %>" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <title>
+    <%= title %>
+  </title>
+</head>
+
+<body>
+  <div class="relative flex min-h-screen flex-col jsutify-center overflow-hidden py-6 bg-pink-100 ">
+    <div
+      class="relative bg-white px-6 pb-5 shadow-xl ring-1 ring-gray-900/5 sm:mx-auto sm:max-w-lg sm:rounded-lg sm:px-10">
+      <div class="mx-auto max-w-md">
+        <a href="/Elections" class="hover:text-pink-400 content-center px-5 py-4"> <%- include('header.ejs') %> </a>
+        <h3 class="px-3 py-4 font-bold text-2xl text-cyan-600 underline">Details of <%= ElectionName %> - Election:
+        </h3><br>
+        <p class="text-2xl px-4 py-5 font-bold">No of Questions: <%= CoQuestions %>
+        </p>
+        <a href="/elections/<%=id%>/newQuestion"
+          class="bg-transparent hover:bg-pink-500 text-black font-semibold hover:text-white py-2 px-4 border border-pink-500 hover:border-transparent rounded">
+          +Add or View Questions+</a>
+        <p class="text-2xl px-4 py-5 font-bold"> No of Voters: <%= CoVoters%>
+        </p>
+        <a href="/elections/<%=id%>/voters"
+          class="bg-transparent hover:bg-pink-500 text-black font-semibold hover:text-white py-2 px-4 border border-pink-500 hover:border-transparent rounded">+Add
+          voters+</a> <br>
+      </div><br>
+      <div>
+        <a href="/elections/<%=id%>/previewEle" class="bg-transparent hover:bg-pink-500 text-black font-semibold hover:text-white py-2 px-4 border border-pink-500 hover:border-transparent rounded">
+          Preview This Election</a>
+      </div>
+      <div>
+        <br>
+        <a href="/signout"
+          class="relative bg-transparent hover:bg-pink-400 text-pink-600 font-semibold hover:text-white py-2 px-4 border border-pink-600 hover:border-transparent rounded">
+          Signout</a>
+      </div>
+    </div>
+  </div>
+
+  </div>
+  </div>
+
+
+</body>
+
+</html>
