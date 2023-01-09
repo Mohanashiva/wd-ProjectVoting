@@ -18,8 +18,8 @@ module.exports = (sequelize, DataTypes) => {
     }
     static addNewQuestion({ question, description, electionId }) {
       return this.create({
-        electionQuestion: question,
-        questionDescription: description,
+        electionQuestion:question,
+        questionDescription:description,
         electionId,
       });
     }
@@ -37,13 +37,33 @@ module.exports = (sequelize, DataTypes) => {
         },
       });
     }
-    static fetchQuestionWithName(question,description){
+    static async fetchQuestionWithName(question,description){
       return this.findOne({
         where:{
           electionQuestion:question,
           questionDescription:description,
         }
       })
+    }
+    static delQuestion(id) {
+      return this.destroy({
+        where: {
+          id,
+        },
+      });
+    }
+    static updateAQuestion({electionQuestion,questionDescription,id}){
+      return this.update({
+        electionQuestion,
+        questionDescription,
+      },
+      {
+        returning:true,
+        where:{
+          id
+        }
+      }
+      )
     }
     static async fetchAllQuestions(electionId) {
       return this.findAll({

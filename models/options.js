@@ -29,6 +29,25 @@ module.exports = (sequelize, DataTypes) => {
         },
       });
     }
+    static deleteAnOption(id) {
+      return this.destroy({
+        where: {
+          id,
+        },
+      });
+    }
+    static updateAnOption({ option, id }) {
+      return this.update(
+        {
+          option,
+        },
+        {
+          where: {
+            id,
+          },
+        }
+      );
+    }
     static addNewOption({option,questionId}){
       return this.create({
         option,
@@ -36,6 +55,7 @@ module.exports = (sequelize, DataTypes) => {
       })
     }
   }
+  
   Options.init(
     {
       option: {

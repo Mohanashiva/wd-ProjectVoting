@@ -35,7 +35,7 @@ describe("OnlineVoting web application", function () {
       console.log(error);
     }
   });
-
+//test for sign up..
   test("Sign up", async () => {
     let res = await agent.get("/signup");
     const csrfToken = extractCsrfToken(res);
@@ -49,3 +49,25 @@ describe("OnlineVoting web application", function () {
     expect(res.statusCode).toBe(302);
   });
 });
+//test for sign in..
+test("Sign in", async () => {
+  const agent = request.agent(server);
+  let res = await agent.get("/elections");
+  expect(res.statusCode).toBe(302);
+  await login(agent, "Johnwick@gmail.com", "1234567890");
+  res = await agent.get("/elections");
+  expect(res.statusCode).toBe(302);
+});
+  //test for Creating Election..
+  test("Creating new election after logging in", async () => {
+    const agent = request.agent(server);
+    await login(agent, "Johnwick@gmail.com", "1234567890");
+    const res = await agent.get("/election/create");
+    const csrfToken = extractCsrfToken(res);
+    const response = await agent.post("/elections").send({
+      electionName: "TeamLeader",
+      customURL: "LEADTEAM",
+      _csrf: csrfToken,
+    });
+    expect(response.statusCode).toBe(500);
+  });
