@@ -236,6 +236,7 @@ app.get(
     connectEnsureLogin.ensureLoggedIn(),
     async (request, response) => {
       console.log("hebchbehucbwhbchubhubfhbh");
+      const votersCount = await Voters.votersCount(request.params.id);
       const elections = await Elections.getElectionWithId(request.params.id);
       const questions = await Questions.fetchAllQuestions(request.params.id);
       const questionsCount = await Questions.countOfQuestions(request.params.id);
@@ -253,6 +254,7 @@ app.get(
             title: elections.electionName,
             questions,
             questionIds,
+            CoVoters: votersCount,
             ElectionName:elections.electionName,
             CoQuestions: questionsCount,
             csrfToken: request.csrfToken(),

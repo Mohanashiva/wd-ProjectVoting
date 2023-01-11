@@ -30,10 +30,10 @@
 </head>
 
 <body>
-    <div class="relative flex min-h-full flex-col jsutify-center overflow-auto py-6 bg-pink-100 ">
+    <div class="relative flex min-h-screen flex-col py-6 bg-pink-100">
         <div
-            class="relative bg-white px-6 pb-5 shadow-xl ring-1 ring-gray-900/5 sm:mx-auto sm:max-w-lg sm:rounded-lg sm:px-auto">
-            <div class="mx-auto max-w-auto">
+            class="relative bg-white px-6 pb-5 shadow-xl ring-1 ring-gray-900/5 sm:mx-auto sm:max-w-lg sm:rounded-lg sm:px-auto add-question">
+            <div class="mx-auto max-w-md">
                 <a href="/Elections" class="hover:text-pink-400 content-center"> <%- include('header.ejs') %> </a>
                 <h3 class="px-3 py-4 font-bold text-2xl text-cyan-600 underline">Manage Questions of <%= ElectionName %>
                         -Election: </h3><br>
@@ -71,16 +71,21 @@
                                                     </svg>
                                                 </a>
                                             </div>
-            </div>
+                                            <% } %>
+      </div>
+            
+
+            <br><a href="/election/<%=id%>/createNewQuestion"
+                class="bg-transparent hover:bg-pink-500 text-black font-semibold hover:text-white py-2 px-4 border border-pink-500 hover:border-transparent rounded">
+                ➕ Add more questions from here</a>
             <% } %>
-                    <br><a href="/election/<%=id%>/createNewQuestion"
-                        class="bg-transparent hover:bg-pink-500 text-black font-semibold hover:text-white py-2 px-4 border border-pink-500 hover:border-transparent rounded">
-                        ➕ Add more questions from here</a>
-                <% } %>
-                    <div>
-                    </div> <br> <a href="/signout"
-                        class="relative bg-transparent hover:bg-pink-400 text-pink-600 font-semibold hover:text-white py-2 px-4 border border-pink-600 hover:border-transparent rounded">
-                        Signout</a>
+                <div>
+                </div> <br> <a href="/signout"
+                    class="relative bg-transparent hover:bg-pink-400 text-pink-600 font-semibold hover:text-white py-2 px-4 border border-pink-600 hover:border-transparent rounded">
+                    Signout</a>
+    </div>
+</div>
+</div>
 </body>
 
 </html>
