@@ -35,8 +35,8 @@
                 <a href="/Elections" class="hover:text-pink-400 content-center"> <%- include('header.ejs') %> </a>
                 <h2 class="text-2xl  text-left font-bold my-5">
                     Add options to your question
-                </h2>
-
+                </h2><br>
+                <p class="text-gray-600 py-2">*add atleast 2 options for one question*</p><br>
                 <div class="divide-y  divide-gray-300/50">
                     <div class="space-y-6 text-base leading-7 text-ray-600">
                         <form action="/elections/<%=id%>/createNewQuestion/<%=questionId%>" method="post">
@@ -47,21 +47,31 @@
                             <input required type="text" id="Option" name="Option"
                                 class="bg-gray-100 inline-block rounded-lg shadow-md py-3 px-4 mb-5 text-base leading-6 placeolder-gray-500"
                                 placeholder="Enter an option.." required><br>
-                            <button type="submit"
-                                class="tbg-transparent hover:bg-pink-500 text-black font-semibold hover:text-white py-2 px-3 my-3 border border-pink-500 hover:border-transparent rounded">
-                                +Add+
-                            </button><br>
-                            <a href="/elections/<%=id%>/createNewQuestion/<%=questionId%>/viewOptions"> <button
-                                    type="button"
-                                    class="w-fit rounded-lg shadow-lg px-4 py-4 bg-pink-500 text-white hover:bg-pink-400 focus:outline-none focus block">
-                                    View Options</button>
-                            </a>
+                            <div class="flex space-x-2">
+                                <div class="justify-content: space-between; display:flex;">
+                                    <button type="submit"
+                                        class="text-white bg-pink-600 hover:bg-pink-700 font-medium rounded px-5 py-2">
+                                        +Add+
+                                    </button><br>
+                                    <a href="/elections/<%=id%>/createNewQuestion/<%=questionId%>/viewOptions"> <button
+                                            type="button"
+                                            class="bg-transparent hover:bg-pink-400 text-pink-600 my-4 font-semibold hover:text-white py-2 px-2 border border-pink-600 hover:border-transparent rounded">
+                                            View Options</button>
+                                    </a> <br>
+                                    <a href="/elections/<%=id%>/NewQuestion"> <button type="button"
+                                            class="bg-transparent hover:bg-pink-400 text-pink-600 my-4font-semibold hover:text-white py-2 px-2 border border-pink-600 hover:border-transparent rounded">
+                                            View Questions</button>
+                                            <a href="/signout"
+                                              class="bg-transparent hover:bg-pink-400 text-pink-600 my-10 font-semibold hover:text-white py-2 px-2 border border-pink-600 hover:border-transparent rounded">
+                                              Signout</a>
+                                          
+                                        </div>
+                                </div>
+                        </form>
                     </div>
-                    </form>
                 </div>
-            </div>  
+            </div>
         </div>
-    </div>
     </div>
 </body>
 

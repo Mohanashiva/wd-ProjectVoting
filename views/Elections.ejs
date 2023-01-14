@@ -37,7 +37,8 @@
             </div>
 
             <% } else{ %>
-              <p class="text-2xl px-3 py-4">Your Elections:</p>
+              <p class="text-gray-600">*click on your election to manage your election..</p>
+              <p class="font-bold text-2xl text-cyan-600 px-3 py-4">Your Elections:</p>
               <% for(var i=0; i<elections.length; i++) {%> <br>
 
                 <a href="/elections/<%= elections[i].id %>"

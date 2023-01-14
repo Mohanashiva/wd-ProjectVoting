@@ -385,9 +385,12 @@ app.get("/elections/:id/Voters", connectEnsureLogin.ensureLoggedIn(),
   })
 app.get("/elections/:id/newVoters", connectEnsureLogin.ensureLoggedIn(),
   async (request, response) => {
+    let ElectionName = request.user.electionName;
+    const elections = await Elections.getElectionWithId(request.params.id);
     response.render("newVoter", {
       csrfToken: request.csrfToken(),
       id: request.params.id,
+      ElectionName: elections.electionName,
     })
   })
 
@@ -424,7 +427,12 @@ app.get("/elections/:id/newVoters", connectEnsureLogin.ensureLoggedIn(),
   async (request, response) => {
     const questionsCount = await Questions.countOfQuestions(request.params.id);
     const questions = await Questions.fetchAllQuestions(request.params.id);
-    response.render("EditQpage", {
+    let questionIds = []
+    for (var i = 0; i < questions.length; i++) {
+      questionIds[i] = questions[i].id
+    }
+
+    response.render("EditQuestion", {
       csrfToken: request.csrfToken(),
       id : request.params.id,
       questions,
