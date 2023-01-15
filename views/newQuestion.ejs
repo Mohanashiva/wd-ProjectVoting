@@ -72,20 +72,25 @@
                                                 </a>
                                             </div>
                                             <% } %>
-      </div>
-            
+            </div>
+
 
             <br><a href="/election/<%=id%>/createNewQuestion"
                 class="bg-transparent hover:bg-pink-500 text-black font-semibold hover:text-white py-2 px-4 border border-pink-500 hover:border-transparent rounded">
                 ➕ Add more questions from here</a>
             <% } %>
                 <div>
-                </div> <br> <a href="/signout"
-                    class="relative bg-transparent hover:bg-pink-400 text-pink-600 font-semibold hover:text-white py-2 px-4 border border-pink-600 hover:border-transparent rounded">
-                    Signout</a>
+                </div>
+                <div class="py-4 px-3"> <a href="/elections/<%=id%>"
+                        class="text-white bg-pink-600 hover:bg-pink-700 font-medium rounded px-5 py-2">
+                        ◂Back</a></div>
+                    <br>
+                    <a href="/signout"
+                        class="relative bg-transparent hover:bg-pink-400 text-pink-600 font-semibold hover:text-white py-2 px-4 border border-pink-600 hover:border-transparent rounded">
+                        Signout</a>
+                </div>
+        </div>
     </div>
-</div>
-</div>
 </body>
 
 </html>

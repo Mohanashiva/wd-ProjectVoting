@@ -23,7 +23,8 @@
             class="relative bg-white px-6 pb-5 shadow-xl ring-1 ring-gray-900/5 sm:mx-auto sm:max-w-lg sm:rounded-lg sm:px-10">
             <div class="mx-auto max-w-md">
                 <a href="/Elections" class="hover:text-pink-400 content-center"> <%- include('header.ejs') %> </a>
-                <h3 class="px-3 py-3 font-bold text-2xl text-cyan-600 underline">Create Question for <%= ElectionName %>-Election: </h3>
+                <h3 class="px-3 py-3 font-bold text-2xl text-cyan-600 underline">Create Question for <%= ElectionName %>
+                        -Election: </h3>
                 <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                 <h2 class="text-2xl  text-center font-bold mb-4">
                     Add Your Question
@@ -49,11 +50,16 @@
                                 Submit
                             </button>
                         </form>
+                        <div class="py-4 px-3">
+                            <a href="/elections/<%=id%>/newQuestion"
+                                class="text-white bg-pink-600 hover:bg-pink-700 font-medium rounded px-2 py-3">
+                                ◂Back</a>
+                            </div>
                         <div>
                             <a href="/signout"
-                              class="relative bg-transparent hover:bg-pink-400 text-pink-600 font-semibold hover:text-white py-2 px-2 border border-pink-600 hover:border-transparent rounded">
-                              Signout</a>
-                          </div>
+                                class="relative bg-transparent hover:bg-pink-400 text-pink-600 font-semibold hover:text-white py-2 px-2 border border-pink-600 hover:border-transparent rounded">
+                                Signout</a>
+                        </div>
                     </div>
 
                 </div>

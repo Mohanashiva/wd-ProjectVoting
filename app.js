@@ -87,6 +87,37 @@ passport.deserializeUser((id, done) => {
       done(error, null);
     });
 });
+
+passport.use(
+  "voters",
+  new LocalStrategy(
+    {
+      voterUsernameField: "voterUserId",
+      voterPasswordField: "voterPassword",
+    },
+    (username, password, done) => {
+      Voters.findOne({ where: { voterUserId: username } })
+        .then(async (user) => {
+          const result = await bcrypt.compare(password, user.password);
+          if (result) {
+            return done(null, user);
+          } else {
+            return done(null, false, { message: "Invalid Password..!" });
+          }
+        })
+        .catch(function () {
+          return done(null, false, { message: "Unrecognized Email..!" });
+        });
+    }
+  )
+);
+passport.serializeUser((user, done) => {
+  done(null, user);
+});
+passport.deserializeUser((user, done) => {
+  done(null, user);
+});
+
 //click signup-signup page
 app.get("/signup", (request, response) => {
   response.render("signup", {
@@ -107,7 +138,7 @@ app.post("/admin", async (request, response) => {
     request.flash("error", "Password should be atleast of length 8");
     response.redirect("/signup");
   }
-  //have to create user here
+  //create user here
   try {
     const admin = await Admin.create({
       FirstName: request.body.FirstName,
@@ -168,7 +199,7 @@ app.post(
     }
   }
 );
-
+//user login
 app.post(
   "/session",
   passport.authenticate("local", {
@@ -205,7 +236,7 @@ app.get(
     }
   }
   //to create election
-),
+),//render to manage elections page
   app.get(
     "/elections/:id",
     connectEnsureLogin.ensureLoggedIn(),
@@ -230,7 +261,7 @@ app.get(
       });
     }
   ),
-  // for questions 
+  // for add questions 
   app.get(
     "/elections/:id/newQuestion",
     connectEnsureLogin.ensureLoggedIn(),
@@ -440,7 +471,7 @@ app.get("/elections/:id/newVoters", connectEnsureLogin.ensureLoggedIn(),
       questionIds,
     })
   })
-//edit options implementation
+//edit function
 app.get("/editThisElection/:id/editQuestion/:questionId",
 connectEnsureLogin.ensureLoggedIn(),
   async (request, response) => {

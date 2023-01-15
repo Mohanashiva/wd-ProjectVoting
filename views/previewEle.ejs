@@ -85,20 +85,26 @@
                                         <% } %>
                                 </ol>
                                 <div>
-                                    <div
-                                        class="bg-pink-100 border border-pink-700 text-green-800 rounded w-fit px-4 pt-2 hover:text-white hover:bg-cyan-600 mx-2 ease-linear">
-                                        <a href="/elections/<%=electionId%>/">Edit This Election</a>
-                                        <br>
-                                    </div>
                                     <button onclick="startElection()"
-                                        class="bg-cyan-100 border border-cyan-700 text-cyan-800 rounded w-fit px-4 pt-2 hover:text-white hover:bg-cyan-600 mx-2">Start
+                                        class="jsutify-center bg-cyan-100 border border-cyan-700 text-cyan-800 rounded w-fit px-4 pt-2 hover:text-white hover:bg-cyan-600 mx-2">۞
+                                        Start
                                         Election</button>
                                 </div>
                             </div>
                         </div>
-                        <div> <a href="/Elections"
-                                class="w-fit rounded-lg shadow-lg px-3 py-4 bg-pink-500 text-white hover:bg-pink-400 focus:outline-none focus block">
-                                home</a>
+                        <br>
+                        <div
+                            class=" justify-center bg-pink-100 border border-pink-700 text-pink-900 rounded w-fit px-2 py-2 hover:text-white hover:bg-cyan-600 mx-2 ease-linear">
+                            <a href="/elections/<%=electionId%>/" class="py-3">✎Edit This Election</a>
+                            <br>
+                        </div>
+                        <div class="py-4 px-3"> <a href="/Elections"
+                                class=" justify-center w-fit rounded-lg shadow-lg px-3 py-4 bg-pink-500 text-white hover:bg-pink-400 focus:outline-none focus block">
+                                ◂Elections Home</a>
+                            <br>
+                            <a href="/signout"
+                                class="relative bg-transparent hover:bg-pink-400 text-pink-600 font-semibold hover:text-white py-2 px-4 border border-pink-600 hover:border-transparent rounded">
+                                Signout</a>
                         </div>
                     </div>
 </body>
