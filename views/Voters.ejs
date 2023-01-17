@@ -10,7 +10,14 @@
         add voters page
     </title>
 </head>
-
+<br>  
+  <div class="relative mx-auto mb-8 w-fit">
+      <% if(messages && messages.error && messages.error.length > 0)  { %>
+         <% for(var i=0; i<messages.error.length; i++) { %>
+                <br> <li class="text-white rounded px-40 py-4 bg-red-500"> <%= messages.error[i] %></li>
+         <% } %>
+       <% } %>
+    </div>
 <body>
     <div class="relative flex min-h-screen flex-col jsutify-center overflow-hidden py-6 bg-pink-100 ">
         <div
@@ -40,5 +47,9 @@
                                         ➕Add more voters</a>
                                 </div>
                                 <% } %>
+                                <br>
+                        <div class="py-4 px-3"> <a href="/elections/<%=id%>"
+                            class="text-white bg-pink-600 hover:bg-pink-700 font-medium rounded px-5 py-2">
+                            ◂Back</a></div><br>
 
 </body>

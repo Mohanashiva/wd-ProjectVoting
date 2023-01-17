@@ -5,6 +5,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="<%= csrfToken %>">
     <script src="https://cdn.tailwindcss.com"></script>
     <title>
         Preview Page
@@ -28,84 +29,90 @@
                 <div class="relative mx-auto mb-7 w-fit">
                     <div><%- include('header.ejs') %></div>
                     <div>
-                        <h3 class="text-xl">Welcome to preview page,
-                        </h3>
-                        <p>you can preview your election here</p>
-                        <br>
-                        <script>
-                            var token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
-                            function startElection() {
-                                let id = "<%=electionId%>"
-                                fetch(`/elections/${id}/start`, {
-                                    method: "put",
-                                    headers: { "Content-Type": "application/json" },
-                                    body: JSON.stringify({
-                                        "_csrf": token,
-                                    })
-                                }).then((res) => {
-                                    if (res.ok) {
-                                        window.location.replace(`/elections/${electionId}`);
+                        <% if (isRunning==true) { %>
+                            <h4 class="px-3 py-2 text-xl text-red-900">This election has been launched !!</h4>
+                            <% } %>
+                                <h3 class="text-xl">Welcome to preview page,
+                                </h3>
+                                <p>you can preview your election here</p>
+                                <br>
+                                <script>
+                                    var token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
+                                    function startElection() {
+                                        let id = "<%=electionId%>"
+                                        fetch(`/elections/${id}/start`, {
+                                            method: "put",
+                                            headers: { "Content-Type": "application/json" },
+                                            body: JSON.stringify({
+                                                "_csrf": token,
+                                            })
+                                        }).then((res) => {
+                                            if (res.ok) {
+                                                window.location.replace(`/elections/${electionId}`);
+                                            }
+                                        }).catch((err) => console.error(err))
                                     }
-                                }).catch((err) => console.error(err))
-                            }
-                        </script>
-                        </head>
-                        <div class="mt-4 bg-white shadow-md rounded-lg text-left">
-                            <div class="py-2 px-8">
-                                <h3 class="px-3 py-3 font-bold text-2xl text-cyan-600">Preview page for <%= ElectionName
-                                        %>-Election: </h3>
-                                <ol class="list-decimal">
-                                    <% for(let i=0; i<questions.length; i++) { %>
-                                        <li class="my-2">
-                                            <div class="px-2 py-1">
-                                                <h3 class="text-2xl my-2 hover:bg-cyan-50 rounded">
-                                                    <%= questions[i].electionQuestion %>
-                                                </h3>
-                                                <p class="text-cyan-800 text-md my-2">
-                                                    description:<%= questions[i].questionDescription %>
-                                                </p>
-                                            </div>
-                                            <div class="ml-8">
-                                                <ol class="list-none">
-                                                    <% for(let j=0; j< options[i].length; j++) { %>
-                                                        <li class="option-item mt-2 cursor-pointer">
-                                                            <input type="radio" id="<%= options[i][j].id %>"
-                                                                class="cursor-pointer"
-                                                                name="answer-<%= questions[i].id %>">
-                                                            <label
-                                                                class="px-1 my-2 cursor-pointer hover:bg-cyan-200 rounded"
-                                                                for="<%= options[i][j].id %>" class="ml-2 text-lg ">
-                                                                <%= options[i][j].option %>
-                                                            </label>
-                                                        </li>
-                                                        <% } %>
-                                                </ol>
-                                            </div>
-                                        </li>
-                                        <% } %>
-                                </ol>
-                                <div>
-                                    <button onclick="startElection()"
-                                        class="jsutify-center bg-cyan-100 border border-cyan-700 text-cyan-800 rounded w-fit px-4 pt-2 hover:text-white hover:bg-cyan-600 mx-2">۞
-                                        Start
-                                        Election</button>
+                                </script>
+                                </head>
+                                <div class="mt-4 bg-white shadow-md rounded-lg text-left">
+                                    <div class="py-2 px-8">
+                                        <h3 class="px-3 py-3 font-bold text-2xl text-cyan-600">Preview page for <%=
+                                                ElectionName %>-Election: </h3>
+                                        <ol class="list-decimal">
+                                            <% for(let i=0; i<questions.length; i++) { %>
+                                                <li class="my-2">
+                                                    <div class="px-2 py-1">
+                                                        <h3 class="text-2xl my-2 hover:bg-cyan-50 rounded">
+                                                            <%= questions[i].electionQuestion %>
+                                                        </h3>
+                                                        <p class="text-cyan-800 text-md my-2">
+                                                            description:<%= questions[i].questionDescription %>
+                                                        </p>
+                                                    </div>
+                                                    <div class="ml-8">
+                                                        <ol class="list-none">
+                                                            <% for(let j=0; j< options[i].length; j++) { %>
+                                                                <li class="option-item mt-2 cursor-pointer">
+                                                                    <input type="radio" id="<%= options[i][j].id %>"
+                                                                        class="cursor-pointer"
+                                                                        name="answer-<%= questions[i].id %>">
+                                                                    <label
+                                                                        class="px-1 my-2 cursor-pointer hover:bg-cyan-200 rounded"
+                                                                        for="<%= options[i][j].id %>"
+                                                                        class="ml-2 text-lg ">
+                                                                        <%= options[i][j].option %>
+                                                                    </label>
+                                                                </li>
+                                                                <% } %>
+                                                        </ol>
+                                                    </div>
+                                                </li>
+                                                <% } %>
+                                        </ol>
+                                        <div>
+                                            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                                            <button onclick="startElection()"
+                                                class="jsutify-center bg-cyan-100 border border-cyan-700 text-cyan-800 rounded w-fit px-4 pt-2 hover:text-white hover:bg-cyan-600 mx-2">۞
+                                                Start
+                                                Election</button>
+                                                <p class="text-small text-gray-600">you can go back to electionpage once you start your election</p>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                        </div>
-                        <br>
-                        <div
-                            class=" justify-center bg-pink-100 border border-pink-700 text-pink-900 rounded w-fit px-2 py-2 hover:text-white hover:bg-cyan-600 mx-2 ease-linear">
-                            <a href="/elections/<%=electionId%>/" class="py-3">✎Edit This Election</a>
-                            <br>
-                        </div>
-                        <div class="py-4 px-3"> <a href="/Elections"
-                                class=" justify-center w-fit rounded-lg shadow-lg px-3 py-4 bg-pink-500 text-white hover:bg-pink-400 focus:outline-none focus block">
-                                ◂Elections Home</a>
-                            <br>
-                            <a href="/signout"
-                                class="relative bg-transparent hover:bg-pink-400 text-pink-600 font-semibold hover:text-white py-2 px-4 border border-pink-600 hover:border-transparent rounded">
-                                Signout</a>
-                        </div>
+                                <br>
+                                <div
+                                    class=" justify-center bg-pink-100 border border-pink-700 text-pink-900 rounded w-fit px-2 py-2 hover:text-white hover:bg-cyan-600 mx-2 ease-linear">
+                                    <a href="/elections/<%=electionId%>/" class="py-3">✎Edit This Election</a>
+                                    <br>
+                                </div>
+                                <div class="py-4 px-3"> <a href="/Elections"
+                                        class=" justify-center w-fit rounded-lg shadow-lg px-3 py-4 bg-pink-500 text-white hover:bg-pink-400 focus:outline-none focus block">
+                                        ◂Elections Home</a>
+                                    <br>
+                                    <a href="/signout"
+                                        class="relative bg-transparent hover:bg-pink-400 text-pink-600 font-semibold hover:text-white py-2 px-4 border border-pink-600 hover:border-transparent rounded">
+                                        Signout</a>
+                                </div>
                     </div>
 </body>
 

@@ -11,22 +11,6 @@
     <title>
         <%= title %>
     </title>
-    <script>
-        var token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
-        function delQuestion({ id, questionId }) {
-            fetch(`/elections/${id}/questions/${questionId}`, {
-                method: "delete",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    "_csrf": token
-                })
-            }).then((res) => {
-                if (res.ok) {
-                    window.location.reload();
-                }
-            }).catch((err) => console.error(err))
-        }
-    </script>
 </head>
 
 <body>
@@ -92,5 +76,20 @@
         </div>
     </div>
 </body>
-
+<script>
+    var token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
+    function delQuestion({ id, questionId }) {
+        fetch(`/elections/${id}/questions/${questionId}`, {
+            method: "delete",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                "_csrf": token
+            })
+        }).then((res) => {
+            if (res.ok) {
+                window.location.reload();
+            }
+        }).catch((err) => console.error(err))
+    }
+</script>
 </html>

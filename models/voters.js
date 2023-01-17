@@ -12,6 +12,9 @@ module.exports = (sequelize, DataTypes) => {
       Voters.belongsTo(models.Elections, {
         foreignKey: "electionId",
       });
+      Voters.hasMany(models.ElectionAnswers,{
+        foreignKey:"voterId"
+      })
     }
     static async addVoter({ voterUserId, voterPassword, electionId }) {
       return await this.create({
@@ -26,6 +29,18 @@ module.exports = (sequelize, DataTypes) => {
           electionId,
         },
       })
+    }
+    static async hasVoted(id) {
+      return await this.update(
+        {
+          isVoted: true,
+        },
+        {
+          where: {
+            id,
+          },
+        }
+      );
     }
     static async fetchVoters(electionId) {
       return await this.findAll({

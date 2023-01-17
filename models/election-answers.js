@@ -9,6 +9,14 @@ module.exports = (sequelize, DataTypes) => {
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
+    static addAnswer({ voterId, electionId, questionId, chosenOption }) {
+      return this.create({
+        voterId,
+        electionId,
+        questionId,
+        pickedOption,
+      });
+    }
     static associate(models) {
       // define association here
       ElectionAnswers.belongsTo(models.Voters,{

@@ -15,6 +15,9 @@ module.exports = (sequelize, DataTypes) => {
       Questions.hasMany(models.Options, {
         foreignKey: "questionId",
       });
+      Questions.hasMany(models.ElectionAnswers,{
+        foreignKey:"questionId"
+      });
     }
     static addNewQuestion({ question, description, electionId }) {
       return this.create({
@@ -60,7 +63,7 @@ module.exports = (sequelize, DataTypes) => {
       {
         returning:true,
         where:{
-          id
+          id,
         }
       }
       )

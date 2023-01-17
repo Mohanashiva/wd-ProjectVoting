@@ -13,6 +13,9 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "questionId",
         onDelete: "CASCADE",
       });
+      Options.hasMany(models.ElectionAnswers,{
+        foreignKey:"pickedOption",
+      });
     }
     static fetchAllOptions(questionId) {
       return this.findAll({
