@@ -10,6 +10,23 @@
     <title>
         Preview Page
     </title>
+    <script>
+        var token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
+        function startElection() {
+            let id = "<%=electionId%>"
+            fetch(`/elections/${id}/start`, {
+                method: "put",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    "_csrf": token,
+                })
+            }).then((res) => {
+                if (res.ok) {
+                    window.location.replace(`/elections/${id}`);
+                }
+            }).catch((err) => console.error(err))
+        }
+    </script>
 </head>
 
 <body>
@@ -36,27 +53,10 @@
                                 </h3>
                                 <p>you can preview your election here</p>
                                 <br>
-                                <script>
-                                    var token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
-                                    function startElection() {
-                                        let id = "<%=electionId%>"
-                                        fetch(`/elections/${id}/start`, {
-                                            method: "put",
-                                            headers: { "Content-Type": "application/json" },
-                                            body: JSON.stringify({
-                                                "_csrf": token,
-                                            })
-                                        }).then((res) => {
-                                            if (res.ok) {
-                                                window.location.replace(`/elections/${electionId}`);
-                                            }
-                                        }).catch((err) => console.error(err))
-                                    }
-                                </script>
-                                </head>
+                               
                                 <div class="mt-4 bg-white shadow-md rounded-lg text-left">
                                     <div class="py-2 px-8">
-                                        <h3 class="px-3 py-3 font-bold text-2xl text-cyan-600">Preview page for <%=
+                                        <h3 class="px-3 py-3 font-bold text-2xl text-cyan-600">Preview for <%=
                                                 ElectionName %>-Election: </h3>
                                         <ol class="list-decimal">
                                             <% for(let i=0; i<questions.length; i++) { %>
@@ -90,12 +90,12 @@
                                                 <% } %>
                                         </ol>
                                         <div>
-                                            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                                           
                                             <button onclick="startElection()"
                                                 class="jsutify-center bg-cyan-100 border border-cyan-700 text-cyan-800 rounded w-fit px-4 pt-2 hover:text-white hover:bg-cyan-600 mx-2">۞
                                                 Start
                                                 Election</button>
-                                                <p class="text-small text-gray-600">you can go back to electionpage once you start your election</p>
+                                                <p class="text-small text-gray-600">*you can go back to electionpage once you start your election</p>
                                         </div>
                                     </div>
                                 </div>

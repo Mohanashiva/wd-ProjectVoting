@@ -21,6 +21,7 @@ module.exports = {
       },
       isVoted: {
         type: Sequelize.BOOLEAN,
+        defaultValue:false,
       },
       createdAt: {
         allowNull: false,

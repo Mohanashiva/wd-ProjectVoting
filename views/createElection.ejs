@@ -24,7 +24,7 @@
             <div class="mx-auto max-w-md">
                 <a href="/Elections" class="hover:text-pink-400 content-center"> <%- include('header.ejs') %> </a>
                 <h2 class="text-2xl  text-left font-bold my-5">
-                    Create your new Election
+                    whats your election name?
                 </h2>
                 <div>
                     <% if(messages && messages.error && messages.error.length> 0) { %>
@@ -51,13 +51,14 @@
                             <input required type="text" id="string" name="string"
                                 class="bg-gray-100 inline-block rounded-lg shadow-md py-3 px-4 mb-5 text-base leading-6 placeolder-gray-500"
                                 placeholder="For customURL,no spaces"><br />
+                                <p class="text-gray-600 py-2">*String will be used for the cutomURL of the election</p>
+                    <br>
                             <button type="submit"
                                 class="text-white bg-pink-600 hover:bg-pink-700 font-medium rounded px-5 py-3">
                                 Create
                             </button>
                     </div>
                     </form>
-                    <p class="text-gray-600 py-2">*String will be used for the cutomURL of the election</p>
                     <br>
                   <a href="/signout"
                     class="bg-transparent hover:bg-pink-400 text-pink-600 my-10 font-semibold hover:text-white py-2 px-4 border border-pink-600 hover:border-transparent rounded">

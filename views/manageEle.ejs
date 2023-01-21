@@ -22,8 +22,9 @@
         </h3><br>
         <% if (isRunning==true) { %>
           <h4 class="px-3 py-2 text-lg text-green-900">This election has launched,voters can access this URL:</h4>
-          <a href="start/<%=customURL%>" class="px-3 py-2 <text-lg></text-lg> underline text-blue-800">
-            https://voteonline.onrender.com/election/<%=customURL%></a>
+          <a href="/e/<%=customURL%>/Voterlogin" class="px-3 py-2 <text-lg></text-lg> underline text-blue-800 live-icon">
+            https://voteonline.onrender.com/e/<%= customURL %></a>
+            <br>
           <br>
           <h2 class="px-3 py-2 text-red-900">You can no longer edit this election</h2>
           <p class="px-3 py-2">your election has <%= CoQuestions %> no.of questions</p>
@@ -34,11 +35,19 @@
               <% if (isRunning==false) { %>
                 <p class="text-2xl px-4 py-5 font-bold">No of Questions: <%= CoQuestions %>
                 </p>
+                <% if (questions.length==0) { %>
+                <p class="text-red-600 py-2">*your election has <%= CoQuestions %> number of questions</p>
+                <br>
+                <% } %>
                 <a href="/elections/<%=id%>/newQuestion"
                   class="bg-transparent hover:bg-pink-500 text-black font-semibold hover:text-white py-2 px-4 border border-pink-500 hover:border-transparent rounded">
                   +manage Questions+</a>
                 <p class="text-2xl px-4 py-5 font-bold"> No of Voters: <%= CoVoters %>
                 </p>
+                <% if (voterss.length==0) { %>
+                <p class="text-red-600 py-2">*your election has <%= CoVoters %> number of voters</p>
+                <br>
+                <% } %>
                 <a href="/elections/<%=id%>/voters"
                   class="bg-transparent hover:bg-pink-500 text-black font-semibold hover:text-white py-2 px-4 border border-pink-500 hover:border-transparent rounded">+manage
                   voters+</a> <br>

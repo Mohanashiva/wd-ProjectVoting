@@ -45,7 +45,7 @@ module.exports = (sequelize, DataTypes) => {
       });
     }
     static async fetchElectionWithURL(customURL){
-      return this.findAll({
+      return this.findOne({
         where:{
           customURL
         },

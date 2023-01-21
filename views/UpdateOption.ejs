@@ -19,9 +19,9 @@
 <script>
 var token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
 function editOption() {
-    let id = <%=id%>;
-    let questionId = <%=questionId%>;
-    let optionId = <%=optionId%>;
+    let ids = <%=id%>;
+    let questionIds = <%=questionId%>;
+    let optionIds = <%=optionId%>;
     let option = document.getElementById("option").value;
     fetch(`/elections/${id}/createNewQuestion/${questionId}/editOptions/${optionId}`, {
         method: "put",

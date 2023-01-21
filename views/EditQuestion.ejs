@@ -10,9 +10,9 @@
     <title>Edit questions page</title>
     <script>
         var token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
-        function editQuestion() {
-            let electionIds = <%=electionId%>;
-            let questionIds = <%=questionId%>;
+        function updateAQuestion() {
+            let electionIds = <%= electionId %>;
+            let questionIds = <%= questionId %>;
             let question = document.getElementById("question").value;
             let description = document.getElementById("description").value;
             fetch(`/elections/${electionId}/editQuestion/${questionId}`, {
@@ -60,11 +60,18 @@
                             <textarea rows="4" cols="40" type="text" id="description" name="description"
                                 class="bg-gray-100 inline-block rounded-lg shadow-md py-3 px-4 mb-5 text-base leading-6 placeolder-gray-500"
                                 placeholder="Add a brief description"></textarea><br>
-                            <button type="button" onclick="editQuestion()"
+                            <button type="button" onclick="updateAQuestion()"
                                 class="w-fit rounded-lg shadow-lg px-5 py-3 bg-pink-500 text-white hover:bg-pink-400 focus:outline-none focus block">
                                 Update Question
                             </button>
+                        </form>
                     </div>
+                    <div class="py-4 px-3">
+                        <a href="/elections/<%=id%>/newQuestion"
+                            class="text-white bg-pink-600 hover:bg-pink-700 font-medium rounded px-2 py-3">
+                            ◂Back</a>
+                        </div>
+                      
                 </div>
             </div>
         </div>
