@@ -181,7 +181,7 @@ app.post(
         return response.redirect("/election/create");
       }
       const URLs = await Elections.fetchElectionWithURL(url);
-      if (URLs.length > 1) {
+      if (URLs) {
         request.flash("error", "Sorry,this string custom string is already been used");
         request.flash("error", "Please Try again with another custom string");
         return response.redirect("election/create");
@@ -864,7 +864,7 @@ app.get("/e/:customURL/Voterlogin", async (request, response) => {
       });
     } else {
       request.flash("This Election has ended");
-      return response.redirect(`/yo/${request.params.customURL}/results`)
+      return response.redirect(`/e/${request.params.customURL}/results`)
     }
   } catch (error) {
     console.log(error);
