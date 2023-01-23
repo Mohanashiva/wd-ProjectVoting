@@ -2,13 +2,13 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="<%= csrfToken %>">
     <script src="https://cdn.tailwindcss.com"></script>
     <title>
-        <%= title %>
+        voting Page
     </title>
     <style>
         input#name:invalid:focus {
@@ -17,42 +17,60 @@
     </style>
 </head>
 
+
 <body>
-    <div class="mt-4 bg-white shadow-md rounded-lg text-center">
-        <div class="py-2 px-8">
-            <h3 class="px-3 py-3 font-bold text-2xl text-cyan-600">Preview page for <%= ElectionName %>-Election: </h3>
-            <form action="/e/<%=customURL%>" method="post">
-                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-                <ol class="list-decimal">
-                    <% for(let i=0; i<questions.length; i++) { %>
-                        <li class="my-2">
-                            <div class="px-2 py-1">
-                                <h3 class="text-2xl my-2 hover:bg-cyan-50 rounded">
-                                    <%= questions[i].electionQuestion %>
-                                </h3>
-                                <p class="text-cyan-800 text-md my-2">
-                                    description:<%= questions[i].questionDescription %>
-                                </p>
-                            </div>
-                            <div class="ml-8">
-                                <ol class="list-none">
-                                    <% for(let j=0; j< options[i].length; j++) { %>
-                                        <li class="option-item mt-2 cursor-pointer">
-                                            <input type="radio" id="<%= options[i][j].id %>" class="cursor-pointer"
-                                                name="answer-<%= questions[i].id %>">
-                                            <label class="px-1 my-2 cursor-pointer hover:bg-cyan-200 rounded"
-                                                for="<%= options[i][j].id %>" class="ml-2 text-lg ">
-                                                <%= options[i][j].option %>
-                                            </label>
-                                        </li>
-                                        <% } %>
-                                </ol>
-                            </div>
-                        </li>
-                        <% } %>
-                </ol>
-                <a class="px-4 py-4 text-white wt-fit"> <button
-                        class="bg-green-500 hover:bg-green-700 rounded px-2 py-2" type="submit">Vote</button></a>
+    <div>
+        <% if(messages && messages.error && messages.error.length> 0) { %>
+            <% for(var i=0; i<messages.error.length; i++) { %>
+                <li class="text-white rounded px-4 py-4 bg-red-500">
+                    <%= messages.error[i] %>
+                </li>
+                <% } %>
+                    <% } %>
+    </div>
+    <div class="relative flex min-h-screen flex-col jsutify-center overflow-hidden py-6 bg-pink-100 ">
+        <div
+            class="relative bg-white px-6 pb-5 shadow-xl ring-1 ring-gray-900/5 sm:mx-auto sm:max-w-lg sm:rounded-lg sm:px-10">
+            <div class="mx-auto max-w-md">
+                <div class="relative mx-auto mb-7 w-fit">
+                    <div><%- include('header.ejs') %></div>
+                    <div class="py-2 px-8">
+                        <h3 class="px-3 py-3 font-bold text-2xl text-cyan-600">Preview for <%= ElectionName %>-Election:
+                        </h3>
+                        <form action="/e/<%=customURL%>" method="post">
+                            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                            <ol class="list-decimal">
+                                <% for(let i=0; i<questions.length; i++) { %>
+                                    <li class="my-2">
+                                        <div class="px-2 py-1">
+                                            <h3 class="text-2xl my-2 rounded">
+                                                <%= questions[i].electionQuestion %>
+                                            </h3>
+                                            <p class="text-cyan-800 text-md my-2">
+                                                description:<%= questions[i].questionDescription %>
+                                            </p>
+                                        </div>
+                                        <div class="ml-8">
+                                            <ol class="list-none">
+                                                <% for(let j=0; j< options[i].length; j++) { %>
+                                                    <li class="option-item mt-2 cursor-pointer">
+                                                        <input type="radio" id="<%= options[i][j].id %>"
+                                                            class="cursor-pointer" name="answer-<%= questions[i].id %>">
+                                                        <label
+                                                            class="px-1 my-2 cursor-pointer hover:bg-cyan-300 rounded"
+                                                            for="<%= options[i][j].id %>" class="ml-2 text-lg ">
+                                                            <%= options[i][j].option %>
+                                                        </label>
+                                                    </li>
+                                                    <% } %>
+                                            </ol>
+                                        </div>
+                                    </li>
+                                    <% } %>
+                            </ol>
+                            <a class="px-4 py-4 text-white wt-fit"> <button
+                                    class="bg-green-600 hover:bg-green-800 rounded px-2 py-2"
+                                    type="submit">submit votes</button></a>
 </body>
 
 </html>

@@ -9,6 +9,24 @@
   <title>
     <%= title %>
   </title>
+  <script>
+    var token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
+    function deleteThisElection(electionId) {
+
+
+      fetch(`/elections/${electionId}/deleteEle`, {
+        method: "delete",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          "_csrf": token
+        })
+      }).then((res) => {
+        if (res.ok) {
+          window.location.reload();
+        }
+      }).catch((err) => console.error(err))
+    }
+  </script>
 </head>
 
 <body>
@@ -33,7 +51,9 @@
             <p>You have zero Elections</p>
             <br>
             <div>
-              <a href="/election/create" class="text-pink-500 font-bold text-base hover:text-pink-700 hover:underline">+Create your first Election🗳️+</a>
+              <a href="/election/create"
+                class="text-pink-500 font-bold text-base hover:text-pink-700 hover:underline">+Create your first
+                Election🗳️+</a>
             </div>
 
             <% } else{ %>
@@ -45,23 +65,26 @@
                   class="px-3 text-xl hover:text-pink-300 no-underline hover:underline px-4 py-4">
                   <%= i+1 %> .<%=elections[i].electionName %>
                 </a>
-                <br>
-                  <% } %>
-                    <br><div>
-                      <a href="/election/create" class="bg-transparent hover:bg-pink-500 text-black font-semibold hover:text-white py-2 px-3 border border-pink-500 hover:border-transparent rounded">
-                        ➕ Create a new election</a><br>
-                    </div>
-                  <div><br>
-                    <% } %>
-                </div>
-                  <br>
-                  <p class="py-3">Not you? Signout here.</here></p>
-                  <br>
-                  <a href="/signout"
-                    class="bg-transparent hover:bg-pink-400 text-pink-600 my-10 font-semibold hover:text-white py-2 px-4 border border-pink-600 hover:border-transparent rounded">
-                    Signout</a>
-                
-        </div>
+        <br>
+        <% } %>
+          <br>
+          <div>
+            <a href="/election/create"
+              class="bg-transparent hover:bg-pink-500 text-black font-semibold hover:text-white py-2 px-3 border border-pink-500 hover:border-transparent rounded">
+              ➕ Create a new election</a><br>
+          </div>
+          <div><br>
+            <% } %>
+          </div>
+          <br>
+          <p class="py-3">Not you? Signout here.</here>
+          </p>
+          <br>
+          <a href="/signout"
+            class="bg-transparent hover:bg-pink-400 text-pink-600 my-10 font-semibold hover:text-white py-2 px-4 border border-pink-600 hover:border-transparent rounded">
+            Signout</a>
+
+      </div>
 </body>
 
 </html>

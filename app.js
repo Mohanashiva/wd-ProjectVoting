@@ -1,3 +1,4 @@
+
 /* eslint-disable no-unused-vars */
 // eslint-disable-next-line no-undef
 const express = require("express");
@@ -51,7 +52,7 @@ app.use(function (request, response, next) {
 //asking passport to work with express
 app.use(passport.initialize());
 app.use(passport.session());
-passport.use(
+passport.use( "admin",
   new LocalStrategy(
     {
       usernameField: "Email",
@@ -92,13 +93,14 @@ passport.deserializeUser((id, done) => {
 passport.use("voters",
   new LocalStrategy(
     {
-      voterUsernameField: "voterUserId",
-      voterPasswordField: "voterPassword",
+      usernameField: "voterUserId",
+      passwordField: "voterPassword",
     },
-    (username, password, done) => {
+  (username, password, done) => {
+
       Voters.findOne({ where: { voterUserId: username } })
         .then(async (user) => {
-          const result = await bcrypt.compare(password, user.voterpassword);
+          const result = await bcrypt.compare(password, user.voterPassword);
           if (result) {
             return done(null, user);
           } else {
@@ -118,14 +120,14 @@ passport.deserializeUser((user, done) => {
   done(null, user);
 });
 
-//click signup-signup page
+//click signup-signup page admin
 app.get("/signup", (request, response) => {
   response.render("signup", {
     title: "Signup",
     csrfToken: request.csrfToken(),
   });
 });
-//click login to render login
+//click login to render login admin
 app.get("/login", (request, response) => {
   response.render("login", { title: "Login", csrfToken: request.csrfToken() });
 });
@@ -201,7 +203,7 @@ app.post(
 //user login
 app.post(
   "/session",
-  passport.authenticate("local", {
+  passport.authenticate("admin", {
     failureRedirect: "/login",
     failureFlash: true,
   }),
@@ -452,7 +454,7 @@ app.post("/elections/:id/newVoters", connectEnsureLogin.ensureLoggedIn(),
       console.log(hashedPwd);
       await Voters.addVoter({
         voterUserId: voterUserId,
-        voterPassword: voterPassword,
+        voterPassword: hashedPwd,
         electionId: request.params.id,
       })
       response.redirect(`/elections/${request.params.id}/Voters`)
@@ -525,6 +527,7 @@ app.get(
   "/elections/:id/createNewQuestion/:questionId/editOption/:optionId",
   connectEnsureLogin.ensureLoggedIn(),
   async (request, response) => {
+    let options = await Options.get1Option(request.params.optionId);
     if (request.user.WhoThat === "admin") {
       try {
         const election = await Elections.getElectionWithId(request.params.id);
@@ -540,9 +543,9 @@ app.get(
           request.flash("error", "You Cannot edit while election is running");
           return response.redirect(`/elections/${request.params.id}/`);
         }
-        const Options = await Options.get1Option(request.params.optionId);
+        const options = await Options.get1Option(request.params.optionId);
         return response.render("UpdateOptions", {
-          option: Options.option,
+          option: options.option,
           csrfToken: request.csrfToken(),
           id: request.params.id,
           questionId: request.params.questionId,
@@ -624,43 +627,8 @@ app.delete(
     }
   }
 )
-//for edit question
-app.put(
-  "/elections/:id/question/:questionId/edit",
-  connectEnsureLogin.ensureLoggedIn(),
-  async (request, response) => {
-    if (request.user.WhoThat === "admin") {
-
-      try {
-        const election = await Elections.getElectionWithId(request.params.id);
-        if (election.isEnded == true) {
-          return response.json("You Cannot edit when the election has ended");
-        }
-        if (election.isRunning == true) {
-          return response.json("You Cannot edit while the election is running");
-        }
-        if (request.user.id !== election.adminId) {
-          return response.json({
-            error: "Invalid Election-ID",
-          });
-        }
-        const updateAQ = await Questions.updateAQuestion({
-          electionQuestion: request.body.question,
-          questionDescription: request.body.description,
-          id: request.params.questionId,
-        });
-        return response.json(updateAQ);
-      } catch (error) {
-        console.log(error);
-        return response.status(422).json(error);
-      }
-    } else if (request.user.WhoThat === "voter") {
-      return response.redirect("/");
-    }
-  }
-);
 //for delete question
-app.delete(
+app.delete( 
   "/elections/:id/questions/:questionId",
   connectEnsureLogin.ensureLoggedIn(),
   async (request, response) => {
@@ -690,6 +658,42 @@ app.delete(
           return response.json({ success: false });
         }
 
+      } catch (error) {
+        console.log(error);
+        return response.status(422).json(error);
+      }
+    } else if (request.user.WhoThat === "voter") {
+      return response.redirect("/");
+    }
+  }
+);
+//for edit question
+app.put(
+  "/elections/:id/editQuestion/:questionId",
+  connectEnsureLogin.ensureLoggedIn(),
+  async (request, response) => {
+    if (request.user.WhoThat === "admin") {
+
+      try {
+        const election = await Elections.getElectionWithId(request.params.id);
+        if (election.isEnded == true) {
+          return response.json("You Cannot edit when the election has ended");
+        }
+        if (election.isRunning == true) {
+          return response.json("You Cannot edit while the election is running");
+        }
+        if (request.user.id !== election.adminId) {
+          return response.json({
+            error: "Invalid Election-ID",
+          });
+        }
+        const updateAQ = await Questions.updateAQuestion({
+          electionQuestion: request.body.question,
+          questionDescription: request.body.description,
+          id: request.params.questionId,
+          
+        });
+        return response.json(updateAQ);
       } catch (error) {
         console.log(error);
         return response.status(422).json(error);
@@ -803,10 +807,7 @@ app.put(
 //now fetch voting page for voter
 //using route "/e/xyz" to make it readable n easy for voter
 app.get("/e/:customURL", async (request, response) => {
-  if (!request.user) {
-    request.flash("error", "Please login before trying to Vote");
-    return response.redirect(`/e/${request.params.customURL}/Voterlogin`);
-  }
+  
   if (request.user.isVoted) {
     request.flash("error", "You have casted your vote successfully");
     return response.redirect(`/e/${request.params.customURL}/results`);
@@ -815,9 +816,10 @@ app.get("/e/:customURL", async (request, response) => {
     const election = await Elections.fetchElectionWithURL(
       request.params.customURL
     );
-    if (election.isEnded) {
+    console.log(request.params.customURL + "   euihuwehowh")
+    if (election.isEnded === true) {
       request.flash("error", "This election has ended,you can not vote now");
-      return response.redirect(`/El/${request.params.customURL}/result`);
+      return response.redirect(`/e/${request.params.customURL}/result`);
     }
     if (request.user.WhoThat === "voter") {
       if (election.isRunning) {
@@ -841,7 +843,7 @@ app.get("/e/:customURL", async (request, response) => {
     } else if (request.user.WhoThat === "admin") {
       request.flash("error", "You cannot vote as Admin!");
       request.flash("error", "Please signout from admin and try again");
-      return response.redirect(`/e/${election.id}`);
+      return response.redirect(`/elections/${election.id}`);
     }
   } catch (error) {
     console.log(error);
@@ -874,18 +876,19 @@ app.get("/e/:customURL/Voterlogin", async (request, response) => {
 //post for voter login
 app.post(
   "/e/:customURL/Voterlogin",
-  passport.authenticate("voter", {
+  passport.authenticate("voters", {
     failureFlash: true,
     failureRedirect: "back",
   }),
-  async (request, response) => {
-    return response.redirect(`/e/${request.params.customURL}`);
+ (request, response) => { 
+    console.log(request.user.WhoThat + "yewgiuwgiugefuiwhuh")
+  return response.redirect(`/e/${request.params.customURL}`);
   }
-);
-app.get("/yo/:customURL/results", async (request, response) => {
+); 
+app.get("/e/:customURL/results", async (request, response) => {
   response.render("result");
 });
-//for signout
+//for signout admin
 app.get("/signout", (request, response, next) => {
   request.logout((err) => {
     if (err) {

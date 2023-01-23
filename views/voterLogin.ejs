@@ -8,7 +8,7 @@
     <meta name="csrf-token" content="<%= csrfToken %>">
 
     <script src="https://cdn.tailwindcss.com"></script>
-    <title>Login page</title>
+    <title>voter Login page</title>
     <style>
         input#name:invalid:focus {
             border: 1px solid red;
@@ -17,48 +17,44 @@
 </head>
 
 <body>
-    <div>
-        <% if(messages && messages.error && messages.error.length> 0) { %>
-            <% for(var i=0; i<messages.error.length; i++) { %>
-                <li class="text-white rounded px-4 py-4 bg-red-500">
-                    <%= messages.error[i] %>
-                </li>
-                <% } %>
-                    <% } %>
-    </div>
-    <div class="relative flex min-h-screen flex-col justify-center overflow-hidden py-6 bg-white ">
+    
+    <div class="relative flex min-h-screen flex-col jsutify-center overflow-hidden py-6 bg-gray-50 ">
         <div
             class="relative bg-white px-6 pb-5 shadow-xl ring-1 ring-gray-900/5 sm:mx-auto sm:max-w-lg sm:rounded-lg sm:px-10">
             <div class="mx-auto max-w-md">
+                <a href="/" class="hover:text-pink-400 content-center"> <%- include('header.ejs') %> </a>
                 <h2 class="text-2xl  text-center font-bold my-5">
-                    VoterloginPage
-
+                    Voter Login
                 </h2>
-
+                <div>
+                    <% if(messages && messages.error && messages.error.length > 0)  { %>
+                       <% for(var i=0; i<messages.error.length; i++) { %>
+                               <li class="text-white rounded px-4 py-4 bg-red-500"> <%= messages.error[i] %></li>
+                       <% } %>
+                     <% } %>
+                  </div>
+                  <br>
                 <div class="divide-y  divide-gray-300/50">
                     <div class="space-y-6 text-base leading-7 text-ray-600">
-                        <form action="/e/<%= customURL %>/Voterlogin" method="post">
+                        <form action="/e/<%=customURL%>/Voterlogin" method="post">
                             <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                             <label for="voterUserId"
-                                class="text-md w-40 inline-block font-medium leading-5 text-gray-700">
-                             Voter ID
-                            </label>
+                                class="text-md w-40 inline-block font-medium leading-3 text-gray-700">VoterID</label>
                             <input required type="text" id="voterUserId" name="voterUserId"
                                 class="bg-gray-100 inline-block rounded-lg shadow-md py-3 px-4 mb-5 text-base leading-6 placeolder-gray-500"
-                                placeholder="Enter Voter ID" required><br />
-                            <label for="voterPassword"
-                                class="text-md w-40 inline-block font-medium leading-3 text-gray-700">Enter
-                                Password</label>
+                                placeholder="Enter VoterId.."><br />
+                            <label for="voterPassword" class="text-md w-40 inline-block font-medium leading-5 text-gray-700">
+                                Password
+                            </label>
                             <input required type="password" id="voterPassword" name="voterPassword"
                                 class="bg-gray-100 inline-block rounded-lg shadow-md py-3 px-4 mb-5 text-base leading-6 placeolder-gray-500"
-                                placeholder="Enter Voter Password..."><br />
-                            <button type="submit" id="submit"
-                                class="w-fit rounded-lg shadow-lg px-5 py-3 bg-pink-500 text-white hover:bg-pink-400 focus:outline-none focus block">Login</button>
-
-                        </form>
-
-                    </div>
-
+                                placeholder="Enter your Password.."><br />
+                            <div class="py-3">
+                                <button type="submit"
+                                    class="text-white bg-pink-600 hover:bg-pink-700 font-medium rounded px-5 py-2">Login
+                                </button>
+                            </div>
+                        </form></div>
                 </div>
             </div>
         </div>

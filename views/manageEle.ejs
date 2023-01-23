@@ -18,15 +18,23 @@
       class="relative bg-white px-6 pb-5 shadow-xl ring-1 ring-gray-900/5 sm:mx-auto sm:max-w-lg sm:rounded-lg sm:px-10">
       <div class="mx-auto max-w-md">
         <a href="/Elections" class="hover:text-pink-400 content-center px-5 py-4"> <%- include('header.ejs') %> </a>
+        <div>
+          <% if(messages && messages.error && messages.error.length > 0)  { %>
+              <% for(var i=0; i<messages.error.length; i++) { %>
+                      <li class="text-white rounded px-4 py-3 bg-red-500"> <%= messages.error[i] %></li>
+              <% } %>
+            <% } %>
+      </div>
+      <br>
         <h3 class="px-3 py-3 font-bold text-2xl text-cyan-600">Details of <%= ElectionName %> - Election:
         </h3><br>
         <% if (isRunning==true) { %>
-          <h4 class="px-3 py-2 text-lg text-green-900">This election has launched,voters can access this URL:</h4>
-          <a href="/e/<%=customURL%>/Voterlogin" class="px-3 py-2 <text-lg></text-lg> underline text-blue-800 live-icon">
-            https://voteonline.onrender.com/e/<%= customURL %></a>
+          <h4 class="px-3 py-2 text-lg font-semibold text-green-900">This election has launched,voters can access this URL:</h4>
+          <a href="/e/<%=customURL%>" class="px-3 py-2 <text-lg></text-lg> underline text-blue-800 live-icon">
+            https://voteonline.onrender.com/e/<%=customURL%></a>
             <br>
           <br>
-          <h2 class="px-3 py-2 text-red-900">You can no longer edit this election</h2>
+          <h2 class="px-3 py-2 font-semibold text-red-900">You can no longer edit this election</h2>
           <p class="px-3 py-2">your election has <%= CoQuestions %> no.of questions</p>
           <p class="px-3 py-3">your election has <%= CoVoters %> no.of voters</p>
           <a href="/elections/<%=id%>/voters" class="underline text-pink-600">Manage voters</a> <br>
@@ -63,9 +71,9 @@
           <a href="#" class="px-4 py-4 text-white wt-fit"> <button
               class=" bg-transparent text-black font-semibold hover:text-white bg-green-600 hover:bg-green-800 rounded px-3 py-2">
               Check Results</button></a>
+              <br>
           <% } %>
             <% if (isRunning==true) { %>
-              <br>
               <a href="#" class="px-4 py-4 text-white wt-fit"> <button
                   class="bg-red-600 hover:bg-red-800 rounded px-3 py-2">End This Election</button></a>
               <% } %>

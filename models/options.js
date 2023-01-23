@@ -25,9 +25,10 @@ module.exports = (sequelize, DataTypes) => {
         order: [["id", "ASC"]],
       });
     }
-    static get1Option(id) {
+    static get1Option({option,id}) {
       return this.findOne({
         where: {
+          option,
           id,
         },
       });

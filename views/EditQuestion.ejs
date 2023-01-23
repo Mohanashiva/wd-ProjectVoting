@@ -11,8 +11,8 @@
     <script>
         var token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
         function updateAQuestion() {
-            let electionIds = <%= electionId %>;
-            let questionIds = <%= questionId %>;
+            let electionId = <%= electionId %>;
+            let questionId = <%= questionId %>;
             let question = document.getElementById("question").value;
             let description = document.getElementById("description").value;
             fetch(`/elections/${electionId}/editQuestion/${questionId}`, {
@@ -44,7 +44,7 @@
                 <h2 class="text-2xl  text-center font-bold mb-4">
                     Edit Your Question
                 </h2>
-                <div class="divide-y  divide-gray-300/50">
+                <div class="divide-y px-4 py-3">
                     <div class="space-y-6 text-base leading-7 text-ray-600">
                         <form action="/elections/<%=id%>/createNewQuestion" method="post">
                             <input type="hidden" name="_csrf" value="<%= csrfToken %>">
@@ -63,9 +63,14 @@
                             <button type="button" onclick="updateAQuestion()"
                                 class="w-fit rounded-lg shadow-lg px-5 py-3 bg-pink-500 text-white hover:bg-pink-400 focus:outline-none focus block">
                                 Update Question
-                            </button>
+                            </button><br>
                         </form>
-                    </div>
+                    </div><br>
+                    <a href="/elections/<%=id%>/createNewQuestion/<%=questionId%>/viewOptions"> <button
+                        type="button"
+                        class="bg-transparent hover:bg-pink-400 text-pink-600 my-4 font-semibold hover:text-white py-2 px-2 border border-pink-600 hover:border-transparent rounded">
+                        View Options for this question</button>
+                </a> <br>
                     <div class="py-4 px-3">
                         <a href="/elections/<%=id%>/newQuestion"
                             class="text-white bg-pink-600 hover:bg-pink-700 font-medium rounded px-2 py-3">

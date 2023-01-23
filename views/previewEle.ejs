@@ -53,11 +53,13 @@
                                 </h3>
                                 <p>you can preview your election here</p>
                                 <br>
-                               
+                                <div class="py-2 px-8">
+                                    <h3 class="px-3 py-3 font-bold text-2xl text-cyan-600">Preview for <%=
+                                            ElectionName %>-Election: </h3>
                                 <div class="mt-4 bg-white shadow-md rounded-lg text-left">
                                     <div class="py-2 px-8">
-                                        <h3 class="px-3 py-3 font-bold text-2xl text-cyan-600">Preview for <%=
-                                                ElectionName %>-Election: </h3>
+                                        <h3 class="px-3 py-3 font-bold text-2xl text-pink-700"><%=
+                                                ElectionName %> </h3>
                                         <ol class="list-decimal">
                                             <% for(let i=0; i<questions.length; i++) { %>
                                                 <li class="my-2">
@@ -90,12 +92,11 @@
                                                 <% } %>
                                         </ol>
                                         <div>
-                                           
+
                                             <button onclick="startElection()"
                                                 class="jsutify-center bg-cyan-100 border border-cyan-700 text-cyan-800 rounded w-fit px-4 pt-2 hover:text-white hover:bg-cyan-600 mx-2">۞
                                                 Start
                                                 Election</button>
-                                                <p class="text-small text-gray-600">*you can go back to electionpage once you start your election</p>
                                         </div>
                                     </div>
                                 </div>

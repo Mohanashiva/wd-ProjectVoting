@@ -24,9 +24,9 @@ module.exports = (sequelize, DataTypes) => {
     }
     static addElection({ electionName, adminId, customURL }) {
       return this.create({
-        electionName,
-        adminId,
-        customURL,
+        electionName:electionName,
+        adminId:adminId,
+        customURL:customURL,
       });
     }
     static fetchAllURL(adminId){
