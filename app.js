@@ -236,14 +236,18 @@ app.get(
     "/elections/:id",
     connectEnsureLogin.ensureLoggedIn(),
     async (request, response) => {
+      if (request.user.WhoThat === "admin") {
       const elections = await Elections.getElectionWithId(request.params.id);
       const questions = await Questions.fetchAllQuestions(request.params.id);
       const questionsCount = await Questions.countOfQuestions(request.params.id);
       const allVoters = await Voters.fetchVoters(request.params.id);
       // const allquestions = await Questions.fetchAllQuestions(request.params.id)
       const votersCount = await Voters.votersCount(request.params.id);
-      let ElectionName = request.user.electionName;
-      let questionDescription = request.user.questionDescription;
+      
+      let customURL=elections.customURL
+      if (elections.isEnded) {
+        return response.redirect(`/e/${customURL}/results`);
+      }
 
       return response.render("manageEle", {
         id: request.params.id,
@@ -258,6 +262,10 @@ app.get(
         customURL: elections.customURL,
         isRunning: elections.isRunning,
       });
+    }
+     else if (request.user.WhoThat == "voter") {
+      return response.redirect("/");
+    }
     }
   ),
   // for add questions 
@@ -764,9 +772,13 @@ app.put(
 //using route "/e/xyz" to make it readable n easy for voter
 app.get("/e/:customURL", async (request, response) => {
   if (!request.user) {
+    request.flash("error", "Please login before trying to Vote");
     return response.redirect(`/e/${request.params.customURL}/Voterlogin`)
   }
-
+  if (request.user.isVoted) {
+    request.flash("error", "You have casted your vote successfully");
+    return response.redirect(`/e/${request.params.customURL}/results`);
+  }
   try {
     const election = await Elections.fetchElectionWithURL(
       request.params.customURL
@@ -795,7 +807,8 @@ app.get("/e/:customURL", async (request, response) => {
       } else {
         return response.render("404");
       }
-    } else if (request.user.WhoThat === "admin") {
+    }
+    else if (request.user.WhoThat === "admin") {
       request.flash("error", "You cannot vote as Admin!");
       request.flash("error", "Please signout from admin and try again");
       return response.redirect(`/elections/${election.id}`);
@@ -827,7 +840,7 @@ app.post("/e/:customURL", async (request, response) => {
     for (let question of questions) {
       let questionid = `answer-${questions.id}`;
       let pickedOption = request.body[questionid];
-      await ElectionAnswers.addAnswer({ 
+      await ElectionAnswers.addAnswer({
         voterId: request.user.id,
         electionId: election.id,
         questionId: question.id,
@@ -882,8 +895,7 @@ app.put(
   "/elections/:electionId/ENDelection",
   connectEnsureLogin.ensureLoggedIn(),
   async (request, response) => {
-    if (request.user.WhoThat === "admin") 
-    {
+    if (request.user.WhoThat === "admin") {
       try {
         const election = await Elections.getElectionWithId(
           request.params.electionId
@@ -913,7 +925,7 @@ app.put(
 
 
 //for results page!
-//
+//using chart.js
 app.get("/e/:customURL/results", async (request, response) => {
   try {
     const election = await Elections.fetchElectionWithURL(
@@ -924,14 +936,14 @@ app.get("/e/:customURL/results", async (request, response) => {
     }
     const questions = await Questions.fetchAllQuestions(election.id);
     const answers = await ElectionAnswers.fetchElectionResults(election.id);
-    let Doptions = [];
+    let options = [];
     let DoptionLabels = [];
     let DoptionsCount = [];
     let Dmostvoted = [];
     for (let question in questions) {
 
       let opts = await Options.fetchAllOptions(questions[question].id);
-      Doptions.push(opts);
+      options.push(opts);
       let opts_count = [];
       let opts_labels = [];
       for (let opt in opts) {
@@ -956,7 +968,7 @@ app.get("/e/:customURL/results", async (request, response) => {
       electionName: election.electionName,
       answers,
       questions,
-      Doptions,
+      options,
       DoptionsCount,
       DoptionLabels,
       Dmostvoted,

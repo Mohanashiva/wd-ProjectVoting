@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -35,4 +35,208 @@
     </h1>
     <p class="font-bold text-cyan-900"> please wait for this election to end to see the result</p>
 </body>
+</html> -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    let ctx = null;
+    let optionsL = null;
+    let DoptionsCount = null;
+  </script>
+  <title>results
+  </title>
+</head>
+
+</div>
+<div class="relative flex min-h-screen flex-col jsutify-center overflow-hidden py-6 bg-cyan-300 ">
+  <div
+    class="relative bg-white px-6 pb-5 shadow-xl ring-1 ring-gray-900/5 sm:mx-auto sm:max-w-lg sm:rounded-lg sm:px-10">
+    <div class="mx-auto max-w-md">
+      <div class="relative mx-auto mb-7 w-fit">
+        <div><%- include('header.ejs') %></div>
+        <% if (messages && messages.error && messages.error.length> 0) { %>
+          <% for(var i=0; i<messages.error.length; i++) { %>
+            <p class="bg-red-600 my-3 text-black list-none rounded-md px-4 py-2">
+              <%= messages.error[i] %>
+            </p>
+            <% } %>
+              <% } %>
+      </div>
+      <div class="flex flex-col ">
+        <span class="text-3xl font-semibold text-cyan-600 mb-8">
+          Results Of Election: <%= electionName %>
+
+        </span>
+        <div class="py-3 justify-between">
+          <div class="flex flex-col justify-evenly my-4 bg-gray-200 rounded-md border border-black">
+
+            <span class="text-2xl font-semibold text-black-200 px-5 py-3">Voters participation details of <%=
+                electionName %>
+                election:</span>
+            <div class="flex flex-col text-black-400 px-10">
+              <span class="text-xl ">Total number of voters are: <%= totalVoters %></span>
+
+              <span class="text-xl ">Total votes casted are: <%= VotedV %></span>
+              
+              <span class="text-xl ">Non-voted voters are: <%= NotVotedV %></span>
+            </div>
+            <div class="w-full flex mt-6">
+              <span class="text-3xl  text-gray-600 font-semibold px-3">Doughnut-Chart:</span>
+              <div class="w-60">
+                <canvas class="object-contain" id="votes"></canvas>
+              </div>
+            </div>
+
+
+            <script>
+              ctx = document.getElementById('votes');
+              completed = "<%= VotedV %>";
+              pending = "<%= NotVotedV %>";
+              new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                  labels: ["voted", "not voted"],
+                  datasets: [{
+                    data: [completed, pending],
+                    borderColor: "#000000",
+                    backgroundColor: [
+                      'rgb(113, 232, 245)',
+                      '#FF1493'
+                    ],
+                  }]
+                },
+                options: {
+                  plugins: {
+                    legend: {
+                      labels: {
+                        color: "black",
+
+                        font: {
+                          size: 18
+                        }
+                      }
+                    }
+                  }
+                }
+              });
+            </script>
+          </div>
+        </div>
+        <ol class="list-decimal mb-5 py-5 text-3xl">
+          <p class="text-3xl font-semibold text-black-200 mb-4">Election results are:</p>
+          <% for(let i=0; i<questions.length; i++) { %>
+            <li class="my-10  bg-gray-200 rounded-md border border-black ">
+              <div class="pl-4 py-4 divide-y divide-x">
+                <div>
+                  <h3 class="text-xl  font-semibold px-4 py-4">
+                    <%= questions[i].electionQuestion %>
+                  </h3>
+                  <p class="text-lg  text-black-400">
+                    <%= questions[i].questionDescription %>
+                  </p>
+                </div>
+                <div class="ml-11 mt-5">
+                  <ol class="list-none">
+                    <% for(let j=0; j < options[i].length; j++) { %>
+                      <li class="option-item my-2 text-xl grid grid-cols-20 text-black items-center">
+                        <% if (DoptionsCount[i][j]===Dmostvoted[i]) {%>
+                          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor" class="w-5 h-6">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                              d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z" />
+                          </svg>
+                          <% } %>
+                            <label class=" col-start-2 col-span-4 text-lg text-black-300"><span class="text-black">
+                                <%= options[i][j].option %>
+                              </span> got <span class="text-black">
+                                <%= DoptionsCount[i][j] %>
+                              </span> votes</label>
+                      </li>
+                      <% } %>
+                  </ol>
+                </div>
+              </div>
+              <div class="w-80  px-4  text-black">
+                <canvas class="object-contain" id="myChart-<%= i %>"></canvas>
+              </div>
+      </div>
+      <div class="items-center">
+        <script>
+          ctx = document.getElementById('myChart-<%= i %>');
+          DoptionsCount = "<%= DoptionsCount[i] %>".split(",");
+          optionsL = "<%= DoptionLabels[i] %>".split(",");
+          new Chart(ctx, {
+            type: 'line',
+            data: {
+              labels: optionsL,
+              datasets: [{
+                label: 'Votes',
+                data: DoptionsCount,
+                borderWidth: 1,
+                borderColor: "#000000",
+                backgroundColor: '#4bdb12',
+              }]
+            },
+            options: {
+              plugins: {
+                legend: {
+                  labels: {
+                    color: "black",
+
+                    font: {
+                      size: 18
+                    }
+                  }
+                }
+              },
+              scales: {
+                y: {
+                  ticks: {
+                    color: "black",
+
+                    font: {
+                      size: 18,
+                    },
+                    stepSize: 1,
+                    beginAtZero: true
+                  },
+                  grid: {
+                    color: '#000',
+                  }
+                },
+                x: {
+                  ticks: {
+                    color: "black",
+
+                    font: {
+                      size: 14
+                    },
+                    stepSize: 1,
+                    beginAtZero: true
+                  },
+                  grid: {
+                    color: '#000',
+                  }
+                }
+              }
+            }
+          });
+        </script>
+      </div>
+      </li> 
+      <% } %>
+        </ol>
+    </div>
+
+  </div>
+</div>
+</body>
+
 </html>
