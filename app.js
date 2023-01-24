@@ -237,35 +237,35 @@ app.get(
     connectEnsureLogin.ensureLoggedIn(),
     async (request, response) => {
       if (request.user.WhoThat === "admin") {
-      const elections = await Elections.getElectionWithId(request.params.id);
-      const questions = await Questions.fetchAllQuestions(request.params.id);
-      const questionsCount = await Questions.countOfQuestions(request.params.id);
-      const allVoters = await Voters.fetchVoters(request.params.id);
-      // const allquestions = await Questions.fetchAllQuestions(request.params.id)
-      const votersCount = await Voters.votersCount(request.params.id);
-      
-      let customURL=elections.customURL
-      if (elections.isEnded) {
-        return response.redirect(`/e/${customURL}/results`);
-      }
+        const elections = await Elections.getElectionWithId(request.params.id);
+        const questions = await Questions.fetchAllQuestions(request.params.id);
+        const questionsCount = await Questions.countOfQuestions(request.params.id);
+        const allVoters = await Voters.fetchVoters(request.params.id);
+        // const allquestions = await Questions.fetchAllQuestions(request.params.id)
+        const votersCount = await Voters.votersCount(request.params.id);
 
-      return response.render("manageEle", {
-        id: request.params.id,
-        title: elections.electionName,
-        ElectionName: elections.electionName,
-        questions: questions,
-        questionDescription: questions.questionDescription,
-        csrfToken: request.csrfToken(),
-        CoQuestions: questionsCount,
-        voterss: allVoters,
-        CoVoters: votersCount,
-        customURL: elections.customURL,
-        isRunning: elections.isRunning,
-      });
-    }
-     else if (request.user.WhoThat == "voter") {
-      return response.redirect("/");
-    }
+        let customURL = elections.customURL
+        if (elections.isEnded) {
+          return response.redirect(`/e/${customURL}/results`);
+        }
+
+        return response.render("manageEle", {
+          id: request.params.id,
+          title: elections.electionName,
+          ElectionName: elections.electionName,
+          questions: questions,
+          questionDescription: questions.questionDescription,
+          csrfToken: request.csrfToken(),
+          CoQuestions: questionsCount,
+          voterss: allVoters,
+          CoVoters: votersCount,
+          customURL: elections.customURL,
+          isRunning: elections.isRunning,
+        });
+      }
+      else if (request.user.WhoThat == "voter") {
+        return response.redirect("/");
+      }
     }
   ),
   // for add questions 
@@ -344,6 +344,7 @@ app.get("/elections/:id/createNewQuestion/:questionId/viewOptions",
       console.log(error)
     }
   })
+//get for creating election
 app.get(
   "/election/create",
   connectEnsureLogin.ensureLoggedIn(),
@@ -354,6 +355,7 @@ app.get(
     });
   }
 ),
+  //post for creating new qestion
   app.post("/elections/:id/createNewQuestion/:questionId",
     connectEnsureLogin.ensureLoggedIn(), async (request, response) => {
       await Options.addNewOption({
@@ -364,6 +366,7 @@ app.get(
       return response.redirect(`/elections/${request.params.id}/createNewQuestion/${questionId}/createOptions`)
 
     })
+//get method for creatinf options
 app.get("/elections/:id/createNewQuestion/:questionId/createOptions",
   connectEnsureLogin.ensureLoggedIn(), async (request, response) => {
     const questions = await Questions.fetchAllQuestions(request.params.id);
@@ -375,7 +378,7 @@ app.get("/elections/:id/createNewQuestion/:questionId/createOptions",
       id: request.params.id
     })
   })
-
+//post for creating new question
 app.post(
   "/elections/:id/createNewQuestion",
   connectEnsureLogin.ensureLoggedIn(),
@@ -423,6 +426,7 @@ app.get("/elections/:id/Voters", connectEnsureLogin.ensureLoggedIn(),
     })
 
   })
+//get method for newvoters
 app.get("/elections/:id/newVoters", connectEnsureLogin.ensureLoggedIn(),
   async (request, response) => {
     let ElectionName = request.user.electionName;
@@ -434,6 +438,7 @@ app.get("/elections/:id/newVoters", connectEnsureLogin.ensureLoggedIn(),
     })
   })
 
+//post method for newvoters
 app.post("/elections/:id/newVoters", connectEnsureLogin.ensureLoggedIn(),
   async (request, response) => {
     const voterUserId = (request.body.voterUserId).trim();
@@ -667,7 +672,7 @@ app.put(
     }
   }
 );
-// for preview page
+//get method for preview page
 app.get("/elections/:id/previewEle", connectEnsureLogin.ensureLoggedIn(), async (request, response) => {
   let ElectionName = request.user.electionName;
   if (request.user.WhoThat === "admin") {
@@ -742,7 +747,7 @@ app.get("/elections/:id/previewEle", connectEnsureLogin.ensureLoggedIn(), async 
     return response.redirect("/");
   }
 });
-//
+//for start method
 app.put(
   "/elections/:id/start",
   connectEnsureLogin.ensureLoggedIn(),
@@ -991,5 +996,5 @@ app.get("/signout", (request, response, next) => {
     response.redirect("/");
   });
 });
-
+//exporting module
 module.exports = app;
