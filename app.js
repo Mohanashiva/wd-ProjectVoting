@@ -52,7 +52,7 @@ app.use(function (request, response, next) {
 //asking passport to work with express
 app.use(passport.initialize());
 app.use(passport.session());
-passport.use( "admin",
+passport.use("admin",
   new LocalStrategy(
     {
       usernameField: "Email",
@@ -77,17 +77,11 @@ passport.use( "admin",
 //converts obj to bytes
 passport.serializeUser((user, done) => {
   console.log("Serializing user in session", user.id);
-  done(null, user.id);
+  done(null, user);
 });
 //converts bytes to obj
 passport.deserializeUser((id, done) => {
-  Admin.findByPk(id)
-    .then((user) => {
-      done(null, user);
-    })
-    .catch((error) => {
-      done(error, null);
-    });
+  done(null, id);
 });
 //same for voters
 passport.use("voters",
@@ -96,7 +90,7 @@ passport.use("voters",
       usernameField: "voterUserId",
       passwordField: "voterPassword",
     },
-  (username, password, done) => {
+    (username, password, done) => {
 
       Voters.findOne({ where: { voterUserId: username } })
         .then(async (user) => {
@@ -166,40 +160,40 @@ app.post(
   "/Elections",
   connectEnsureLogin.ensureLoggedIn(),
   async (request, response) => {
-      const nullString = request.body.ElectionName.trim();
+    const nullString = request.body.ElectionName.trim();
 
-      if (nullString.length == 0) {
-        request.flash("error", "Election Name Should not be Null");
-        return response.redirect("/election/create");
-      }
-      const url = request.body.string;
-      function WhiteSpacesCheck(value) {
-        return value.indexOf(" ") >= 0;
-      }
-      const whiteSpace = WhiteSpacesCheck(url);
-      if (whiteSpace == true) {
-        request.flash("error", "Do not use white spaces");
-        console.log("Spaces found");
-        return response.redirect("/election/create");
-      }
-      const URLs = await Elections.fetchElectionWithURL(url);
-      if (URLs) {
-        request.flash("error", "Sorry,this string custom string is already been used");
-        request.flash("error", "Please Try again with another custom string");
-        return response.redirect("election/create");
-      }
-      try {
-        await Elections.addElection({
-          electionName: request.body.ElectionName,
-          adminId: request.user.id,
-          customURL: request.body.string,
-        });
-        return response.redirect("/Elections");
-      } catch (error) {
-        request.flash("error", error.message);
-        return response.redirect("/Elections");
-      }
-    });
+    if (nullString.length == 0) {
+      request.flash("error", "Election Name Should not be Null");
+      return response.redirect("/election/create");
+    }
+    const url = request.body.string;
+    function WhiteSpacesCheck(value) {
+      return value.indexOf(" ") >= 0;
+    }
+    const whiteSpace = WhiteSpacesCheck(url);
+    if (whiteSpace == true) {
+      request.flash("error", "Do not use white spaces");
+      console.log("Spaces found");
+      return response.redirect("/election/create");
+    }
+    const URLs = await Elections.fetchElectionWithURL(url);
+    if (URLs) {
+      request.flash("error", "Sorry,this string custom string is already been used");
+      request.flash("error", "Please Try again with another custom string");
+      return response.redirect("election/create");
+    }
+    try {
+      await Elections.addElection({
+        electionName: request.body.ElectionName,
+        adminId: request.user.id,
+        customURL: request.body.string,
+      });
+      return response.redirect("/Elections");
+    } catch (error) {
+      request.flash("error", error.message);
+      return response.redirect("/Elections");
+    }
+  });
 //user login
 app.post(
   "/session",
@@ -255,11 +249,11 @@ app.get(
         id: request.params.id,
         title: elections.electionName,
         ElectionName: elections.electionName,
-        questions:questions,
+        questions: questions,
         questionDescription: questions.questionDescription,
         csrfToken: request.csrfToken(),
         CoQuestions: questionsCount,
-        voterss:allVoters,
+        voterss: allVoters,
         CoVoters: votersCount,
         customURL: elections.customURL,
         isRunning: elections.isRunning,
@@ -560,44 +554,6 @@ app.get(
     }
   }
 );
-//for edit option
-app.put(
-  "/elections/:id/createNewQuestion/:questionId/editOption/:optionId",
-  connectEnsureLogin.ensureLoggedIn(),
-  async (request, response) => {
-    if (request.user.WhoThat === "admin") {
-      if (!request.body.option) {
-        request.flash("error", "Please Enter Option");
-        return response.json({
-          error: "The Option Field Is Empty",
-        });
-      }
-      try {
-        const election = await Elections.getElectionWithId(request.params.id);
-        if (request.user.id !== election.adminId) {
-          request.flash("error", "Invalid election-ID");
-          return response.redirect("/elections");
-        }
-        if (election.isRunning) {
-          return response.json("You Cannot edit while the election is running");
-        }
-        if (election.isEnded) {
-          return response.json("You Cannot edit when the election has ended");
-        }
-        const updatedOp = await Options.updateAnOption({
-          id: request.params.optionId,
-          option: request.body.option,
-        });
-        return response.json(updatedOp);
-      } catch (error) {
-        console.log(error);
-        return response.status(422).json(error);
-      }
-    } else if (request.user.WhoThat === "voter") {
-      return response.redirect("/");
-    }
-  }
-);
 //for delete option
 app.delete(
   "/elections/:id/createNewQuestion/:questionId/deleteOptions/:optionId",
@@ -628,7 +584,7 @@ app.delete(
   }
 )
 //for delete question
-app.delete( 
+app.delete(
   "/elections/:id/questions/:questionId",
   connectEnsureLogin.ensureLoggedIn(),
   async (request, response) => {
@@ -691,7 +647,7 @@ app.put(
           electionQuestion: request.body.question,
           questionDescription: request.body.description,
           id: request.params.questionId,
-          
+
         });
         return response.json(updateAQ);
       } catch (error) {
@@ -807,11 +763,10 @@ app.put(
 //now fetch voting page for voter
 //using route "/e/xyz" to make it readable n easy for voter
 app.get("/e/:customURL", async (request, response) => {
-  
-  if (request.user.isVoted) {
-    request.flash("error", "You have casted your vote successfully");
-    return response.redirect(`/e/${request.params.customURL}/results`);
+  if (!request.user) {
+    return response.redirect(`/e/${request.params.customURL}/Voterlogin`)
   }
+
   try {
     const election = await Elections.fetchElectionWithURL(
       request.params.customURL
@@ -819,14 +774,14 @@ app.get("/e/:customURL", async (request, response) => {
     console.log(request.params.customURL + "   euihuwehowh")
     if (election.isEnded === true) {
       request.flash("error", "This election has ended,you can not vote now");
-      return response.redirect(`/e/${request.params.customURL}/result`);
+      return response.redirect(`/e/${request.params.customURL}/results`);
     }
     if (request.user.WhoThat === "voter") {
       if (election.isRunning) {
         const questions = await Questions.fetchAllQuestions(election.id);
         let options = [];
         for (let question in questions) {
-          options.push(await Option.getAllOptions(questions[question].id));
+          options.push(await Options.fetchAllOptions(questions[question].id));
         }
         return response.render("votingPage", {
           title: election.electionName,
@@ -850,6 +805,43 @@ app.get("/e/:customURL", async (request, response) => {
     return response.status(422).json(error);
   }
 });
+//posst method for votes
+app.post("/e/:customURL", async (request, response) => {
+  if (!request.user) {
+    request.flash("error", "Please login to vote in this election");
+    return response.redirect(`/e/${request.params.customURL}/Voterlogin`);
+  }
+
+  if (request.user.isVoted) {
+    request.flash("error", "You have voted in this election!");
+    return response.redirect(`/e/${request.params.customURL}/results`);
+  }
+
+  try {
+    let election = await Elections.fetchElectionWithURL(request.params.customURL);
+    if (election.isEnded) {
+      request.flash("error", "This election has ended you cannot vote now");
+      return response.redirect(`/elections/${request.params.id}/results`);
+    }
+    let questions = await Questions.fetchAllQuestions(election.id);
+    for (let question of questions) {
+      let questionid = `answer-${questions.id}`;
+      let pickedOption = request.body[questionid];
+      await ElectionAnswers.addAnswer({ 
+        voterId: request.user.id,
+        electionId: election.id,
+        questionId: question.id,
+        pickedOption: pickedOption,
+      });
+      await Voters.hasVoted(request.user.id);
+      return response.redirect(`/e/${request.params.customURL}/results`);
+    }
+  } catch (error) {
+    console.log(error);
+    return response.status(422).json(error);
+  }
+});
+
 //get method for voterLogin
 app.get("/e/:customURL/Voterlogin", async (request, response) => {
   try {
@@ -878,15 +870,105 @@ app.post(
   "/e/:customURL/Voterlogin",
   passport.authenticate("voters", {
     failureFlash: true,
-    failureRedirect: "back",
+    // failureRedirect: "back",
   }),
- (request, response) => { 
+  (request, response) => {
     console.log(request.user.WhoThat + "yewgiuwgiugefuiwhuh")
-  return response.redirect(`/e/${request.params.customURL}`);
+    return response.redirect(`/e/${request.params.customURL}`);
   }
-); 
+);
+//end an election
+app.put(
+  "/elections/:electionId/ENDelection",
+  connectEnsureLogin.ensureLoggedIn(),
+  async (request, response) => {
+    if (request.user.WhoThat === "admin") 
+    {
+      try {
+        const election = await Elections.getElectionWithId(
+          request.params.electionId
+        );
+        if (request.user.id !== election.adminId) {
+          return response.json({
+            error: "Election Id is invalid",
+          });
+        }
+        const EndThisElection = await Elections.EndThisElection(
+          request.params.electionId
+        );
+        return response.json(EndThisElection);
+      } catch (error) {
+        console.log(error);
+        return response.status(422).json(error);
+      }
+    } else if (request.user.WhoThat === "voter") {
+      return response.redirect("/");
+    }
+  }
+);
+
+// app.get("/e/:customURL/results", async (request, response) => {
+//   response.render("resultsPage");
+// });
+
+
+//for results page!
+//
 app.get("/e/:customURL/results", async (request, response) => {
-  response.render("result");
+  try {
+    const election = await Elections.fetchElectionWithURL(
+      request.params.customURL
+    );
+    if (!election.isEnded) {
+      return response.render("thankyouPage");
+    }
+    const questions = await Questions.fetchAllQuestions(election.id);
+    const answers = await ElectionAnswers.fetchElectionResults(election.id);
+    let Doptions = [];
+    let DoptionLabels = [];
+    let DoptionsCount = [];
+    let Dmostvoted = [];
+    for (let question in questions) {
+
+      let opts = await Options.fetchAllOptions(questions[question].id);
+      Doptions.push(opts);
+      let opts_count = [];
+      let opts_labels = [];
+      for (let opt in opts) {
+        opts_labels.push(opts[opt].option);
+        opts_count.push(
+          await ElectionAnswers.countOfOptions({
+            electionId: election.id,
+            pickedOption: opts[opt].id,
+            questionId: questions[question].id,
+          })
+        );
+      }
+      Dmostvoted.push(Math.max.apply(Math, opts_count));
+      DoptionLabels.push(opts_labels);
+      DoptionsCount.push(opts_count);
+      console.log(Dmostvoted);
+    }
+    const VotedV = await Voters.VotedCount(election.id);
+    const NotVotedV = await Voters.NotVotedCount(election.id);
+    const totalVoters = VotedV + NotVotedV;
+    return response.render("resultsPage", {
+      electionName: election.electionName,
+      answers,
+      questions,
+      Doptions,
+      DoptionsCount,
+      DoptionLabels,
+      Dmostvoted,
+      VotedV,
+      NotVotedV,
+      totalVoters,
+    });
+  } catch (error) {
+    console.log(error);
+    return response.status(422).json(error);
+  }
+
 });
 //for signout admin
 app.get("/signout", (request, response, next) => {

@@ -38,11 +38,11 @@
             class="relative bg-white px-6 pb-5 shadow-xl ring-1 ring-gray-900/5 sm:mx-auto sm:max-w-lg sm:rounded-lg sm:px-10">
             <div class="mx-auto max-w-md">
                 <a href="/Elections" class="hover:text-pink-400 content-center"> <%- include('header.ejs') %> </a>
-                <h3 class="px-3 py-3 font-bold text-2xl text-cyan-600 underline">Editing <%= ElectionName %>
+                <h3 class="px-3 py-3 font-bold text-2xl text-cyan-600">Editing <%= ElectionName %>
                         -Election: </h3>
                 <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-                <h2 class="text-2xl  text-center font-bold mb-4">
-                    Edit Your Question
+                <h2 class="text-2xl font-bold mb-4">
+                    _Edit Your Question
                 </h2>
                 <div class="divide-y px-4 py-3">
                     <div class="space-y-6 text-base leading-7 text-ray-600">

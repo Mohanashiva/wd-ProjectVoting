@@ -10,6 +10,23 @@
   <title>
     <%= title %>
   </title>
+  <script>
+    var token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
+    function EndThisElection() {
+        let electionId = <%=id%>;
+        fetch(`/elections/${electionId}/ENDelection`, {
+            method: "put",
+            headers: {"Content-Type":"application/json"},
+            body: JSON.stringify({
+                "_csrf":token,
+            })
+        }).then((res)=>{
+            if (res.ok) {
+                window.location.replace(`/elections/${electionId}`);
+            }
+        }).catch((err)=> console.error(err))
+    }
+</script>
 </head>
 
 <body>
@@ -35,8 +52,8 @@
             <br>
           <br>
           <h2 class="px-3 py-2 font-semibold text-red-900">You can no longer edit this election</h2>
-          <p class="px-3 py-2">your election has <%= CoQuestions %> no.of questions</p>
-          <p class="px-3 py-3">your election has <%= CoVoters %> no.of voters</p>
+          <p class="px-3 py-2">your election has <%= CoQuestions %> questions</p>
+          <p class="px-3 py-3">your election has <%= CoVoters %> registerdvoters</p>
           <a href="/elections/<%=id%>/voters" class="underline text-pink-600">Manage voters</a> <br>
           <% } %>
             <br>
@@ -70,11 +87,12 @@
           <br>
           <a href="#" class="px-4 py-4 text-white wt-fit"> <button
               class=" bg-transparent text-black font-semibold hover:text-white bg-green-600 hover:bg-green-800 rounded px-3 py-2">
-              Check Results</button></a>
+              Preview Results</button></a>
               <br>
           <% } %>
             <% if (isRunning==true) { %>
-              <a href="#" class="px-4 py-4 text-white wt-fit"> <button
+              <a class="px-4 py-4 text-white wt-fit"> 
+                <button  onclick="EndThisElection()"
                   class="bg-red-600 hover:bg-red-800 rounded px-3 py-2">End This Election</button></a>
               <% } %>
                 <div>

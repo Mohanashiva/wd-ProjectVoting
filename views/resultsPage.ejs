@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>
+        results page
+    </title>
+    <style>
+        input#name:invalid:focus {
+            border: 1px solid red;
+        }
+    </style>
+</head>
+
+<body>
+    <div>
+        <% if(messages && messages.error && messages.error.length > 0)  { %>
+            <% for(var i=0; i<messages.error.length; i++) { %>
+                    <li class="text-white rounded px-4 py-4 bg-red-500"> <%= messages.error[i] %></li>
+            <% } %>
+          <% } %>
+
+    </div>
+    <div class="relative flex min-h-screen flex-col jsutify-center overflow-hidden py-6 bg-green-400 ">
+        <div
+            class="relative bg-white px-6 pb-5 shadow-xl ring-1 ring-gray-900/5 sm:mx-auto sm:max-w-lg sm:rounded-lg sm:px-10">
+            <div class="mx-auto max-w-md">
+                
+    <h1 class="text-bold text-xl">Your vote has been made suscessfully!
+       
+    </h1>
+    <p class="font-bold text-cyan-900"> please wait for this election to end to see the result</p>
+</body>
+</html>

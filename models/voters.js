@@ -42,6 +42,22 @@ module.exports = (sequelize, DataTypes) => {
         }
       );
     }
+    static async VotedCount(electionId) {
+      return await this.count({
+        where: {
+          electionId,
+          isVoted: true,
+        },
+      });
+    }
+    static async NotVotedCount(electionId) {
+      return await this.count({
+        where: {
+          electionId,
+          isVoted: false,
+        },
+      });
+    }
     static async fetchVoters(electionId) {
       return await this.findAll({
         where: {

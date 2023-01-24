@@ -28,14 +28,14 @@
                 <% } %>
                     <% } %>
     </div>
-    <div class="relative flex min-h-screen flex-col jsutify-center overflow-hidden py-6 bg-pink-100 ">
+    <div class="relative flex min-h-screen flex-col jsutify-center overflow-hidden py-6 bg-green-200 ">
         <div
             class="relative bg-white px-6 pb-5 shadow-xl ring-1 ring-gray-900/5 sm:mx-auto sm:max-w-lg sm:rounded-lg sm:px-10">
             <div class="mx-auto max-w-md">
                 <div class="relative mx-auto mb-7 w-fit">
                     <div><%- include('header.ejs') %></div>
                     <div class="py-2 px-8">
-                        <h3 class="px-3 py-3 font-bold text-2xl text-cyan-600">Preview for <%= ElectionName %>-Election:
+                        <h3 class="px-3 py-3 font-bold text-2xl text-cyan-600">Election name: <%= electionName %>
                         </h3>
                         <form action="/e/<%=customURL%>" method="post">
                             <input type="hidden" name="_csrf" value="<%= csrfToken %>">
