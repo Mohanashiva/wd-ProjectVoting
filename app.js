@@ -587,6 +587,16 @@ app.delete(
         }
         const delOP = await Options.deleteAnOption(request.params.optionId);
         return response.json({ success: delOP === 1 });
+
+        // );
+        // if (questionsCount == 1) {
+        //   return response.json("election should have atleast one question")
+        // }
+        // if (questionsCount > 1) {
+        //   const del = await Questions.delQuestion(request.params.questionId);
+        //   return response.json({ success: del === 1 });
+        // } else {
+        //   return response.json({ success: false });
       } catch (error) {
         console.log(error);
         return response.status(422).json(error);
@@ -843,14 +853,15 @@ app.post("/e/:customURL", async (request, response) => {
     }
     let questions = await Questions.fetchAllQuestions(election.id);
     for (let question of questions) {
-      let questionid = `answer-${questions.id}`;
+      let questionid = `q-${questions.id}`;
       let pickedOption = request.body[questionid];
-      await ElectionAnswers.addAnswer({
+     const res= await ElectionAnswers.addAnswer({
         voterId: request.user.id,
         electionId: election.id,
         questionId: question.id,
         pickedOption: pickedOption,
       });
+      console.log(res.voterId + "qiuehuiowhfwhfuiowhw");
       await Voters.hasVoted(request.user.id);
       return response.redirect(`/e/${request.params.customURL}/results`);
     }
@@ -924,11 +935,67 @@ app.put(
   }
 );
 
-// app.get("/e/:customURL/results", async (request, response) => {
-//   response.render("resultsPage");
-// });
 
 
+//for preview results
+app.get("/e/:customURL/previewResults", async (request, response) => {
+  try {
+    const election = await Elections.fetchElectionWithURL(
+      request.params.customURL
+    );
+    if (election.isEnded) {
+      return response.render("previewResults");
+    }
+
+    const questions = await Questions.fetchAllQuestions(election.id);
+    const answers = await ElectionAnswers.fetchElectionResults(election.id);
+    let options = [];
+    let DoptionLabels = [];
+    let DoptionsCount = [];
+    let Dmostvoted = [];
+    for (let question in questions) {
+
+      let opts = await Options.fetchAllOptions(questions[question].id);
+      options.push(opts);
+      let opts_count = [];
+      let opts_labels = [];
+      for (let opt in opts) {
+        opts_labels.push(opts[opt].option);
+        opts_count.push(
+          await ElectionAnswers.countOfOptions({
+            electionId: election.id,
+            pickedOption: opts[opt].id,
+            questionId: questions[question].id,
+          })
+        );
+      }
+      Dmostvoted.push(Math.max.apply(Math, opts_count));
+      DoptionLabels.push(opts_labels);
+      DoptionsCount.push(opts_count);
+      console.log(Dmostvoted);
+    }
+    const VotedV = await Voters.VotedCount(election.id);
+    const NotVotedV = await Voters.NotVotedCount(election.id);
+    const totalVoters = VotedV + NotVotedV;
+    return response.render("resultsPage", {
+      electionName: election.electionName,
+      answers,
+      questions,
+      options,
+      DoptionsCount,
+      DoptionLabels,
+      VotedV,
+      NotVotedV,
+      totalVoters,
+      Dmostvoted,
+      
+    });
+  } catch (error) {
+    console.log(error);
+    return response.status(422).json(error);
+  }
+
+});
 //for results page!
 //using chart.js
 app.get("/e/:customURL/results", async (request, response) => {
